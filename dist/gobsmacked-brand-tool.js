@@ -379,7 +379,7 @@
   .blobs[data-blob="geen"] { display: none; }
 
   .text { position: absolute; left: 75px; right: 75px; }
-  .frame[data-position="onder"] .text { bottom: 470px; }
+  .frame[data-position="onder"] .text { bottom: 400px; }
   .frame[data-position="boven"] .text { top: 290px; }
   .badge {
     display: inline-flex;
@@ -411,8 +411,6 @@
   .line { margin: 22px 0 0; max-height: 2.8em; overflow: hidden; font-size: 34px; line-height: 1.35; }
   .badge:empty, .title:empty, .line:empty { display: none; }
   .text > :first-child { margin-top: 0; }
-  .logo { position: absolute; left: 50%; bottom: 360px; transform: translateX(-50%); width: 200px; }
-  .frame[data-position="boven"] .logo { bottom: 360px; }
 </style>
 <div class="frame" data-slot="position" data-slot-attr="data-position" data-position="onder">
   <img class="photo" data-slot="photo" alt="" />
@@ -423,9 +421,8 @@
     <h1 class="title" data-slot="title" data-fit></h1>
     <p class="line" data-slot="text" data-fit></p>
   </div>
-  <img class="logo" data-slot="logo" alt="" />
 </div>
-`;var Ol={id:"gob-story",name:"Story",type:"social-story",width:1080,height:1920,overlayExport:!0,source:{note:"Instagram/LinkedIn-story. Tekst blijft binnen de veilige zone: 260 px boven en 340 px onder vrij voor de app-knoppen."},locked:["Subtiele donkere overloop en gradient","Label als pill","Logo klein onderaan","Tekst binnen de veilige zone"],tokens:{colors:["achtergrond","op-achtergrond","merk","gloed-links","gloed-rechts"],fonts:["kop","tekst"]},slots:[{id:"blob",type:"variant",label:"Gradient",default:"hoeken",options:[{id:"hoeken",label:"Hoeken"},{id:"gespiegeld",label:"Gespiegeld"},{id:"ingetogen",label:"Ingetogen"},{id:"geen",label:"Geen"}]},{id:"position",type:"variant",label:"Plek van de tekst",default:"onder",options:[{id:"onder",label:"Onder"},{id:"boven",label:"Boven"}]},{id:"photo",type:"image",label:"Foto (staand)"},{id:"label",type:"text",label:"Label",maxChars:28,default:"Behind the scenes"},{id:"title",type:"text",label:"Kop",maxChars:48,default:"",placeholder:"Korte kop, mag leeg blijven"},{id:"text",type:"text",label:"Regel eronder",maxChars:90,default:"",placeholder:"Mag leeg blijven"},{id:"logo",type:"brand-logo",label:"Logo",onRole:"achtergrond",logo:"full"}]};var zl=`<style>
+`;var Ol={id:"gob-story",name:"Story",type:"social-story",width:1080,height:1920,overlayExport:!0,source:{note:"Instagram/LinkedIn-story. Tekst blijft binnen de veilige zone: 260 px boven en 340 px onder vrij voor de app-knoppen."},locked:["Subtiele donkere overloop en gradient","Label als pill","Tekst binnen de veilige zone"],tokens:{colors:["achtergrond","op-achtergrond","merk","gloed-links","gloed-rechts"],fonts:["kop","tekst"]},slots:[{id:"blob",type:"variant",label:"Gradient",default:"hoeken",options:[{id:"hoeken",label:"Hoeken"},{id:"gespiegeld",label:"Gespiegeld"},{id:"ingetogen",label:"Ingetogen"},{id:"geen",label:"Geen"}]},{id:"position",type:"variant",label:"Plek van de tekst",default:"onder",options:[{id:"onder",label:"Onder"},{id:"boven",label:"Boven"}]},{id:"photo",type:"image",label:"Foto (staand)"},{id:"label",type:"text",label:"Label",maxChars:28,default:"Behind the scenes"},{id:"title",type:"text",label:"Kop",maxChars:48,default:"",placeholder:"Korte kop, mag leeg blijven"},{id:"text",type:"text",label:"Regel eronder",maxChars:90,default:"",placeholder:"Mag leeg blijven"}]};var zl=`<style>
   .frame {
     position: relative;
     width: 1080px;

@@ -27,7 +27,7 @@
   .blobs[data-blob="geen"] { display: none; }
 
   .text { position: absolute; left: 75px; right: 75px; }
-  .frame[data-position="onder"] .text { bottom: 470px; }
+  .frame[data-position="onder"] .text { bottom: 400px; }
   .frame[data-position="boven"] .text { top: 290px; }
   .badge {
     display: inline-flex;
@@ -59,8 +59,6 @@
   .line { margin: 22px 0 0; max-height: 2.8em; overflow: hidden; font-size: 34px; line-height: 1.35; }
   .badge:empty, .title:empty, .line:empty { display: none; }
   .text > :first-child { margin-top: 0; }
-  .logo { position: absolute; left: 50%; bottom: 360px; transform: translateX(-50%); width: 200px; }
-  .frame[data-position="boven"] .logo { bottom: 360px; }
 </style>
 <div class="frame" data-slot="position" data-slot-attr="data-position" data-position="onder">
   <img class="photo" data-slot="photo" alt="" />
@@ -71,5 +69,4 @@
     <h1 class="title" data-slot="title" data-fit></h1>
     <p class="line" data-slot="text" data-fit></p>
   </div>
-  <img class="logo" data-slot="logo" alt="" />
 </div>

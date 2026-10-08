@@ -5,9 +5,27 @@
   "width": 1080,
   "height": 1920,
   "overlayExport": true,
-  "source": { "note": "Instagram/LinkedIn-story. Tekst blijft binnen de veilige zone: 260 px boven en 340 px onder vrij voor de app-knoppen." },
-  "locked": ["Subtiele donkere overloop en gradient", "Label als pill", "Logo klein onderaan", "Tekst binnen de veilige zone"],
-  "tokens": { "colors": ["achtergrond", "op-achtergrond", "merk", "gloed-links", "gloed-rechts"], "fonts": ["kop", "tekst"] },
+  "source": {
+    "note": "Instagram/LinkedIn-story. Tekst blijft binnen de veilige zone: 260 px boven en 340 px onder vrij voor de app-knoppen."
+  },
+  "locked": [
+    "Subtiele donkere overloop en gradient",
+    "Label als pill",
+    "Tekst binnen de veilige zone"
+  ],
+  "tokens": {
+    "colors": [
+      "achtergrond",
+      "op-achtergrond",
+      "merk",
+      "gloed-links",
+      "gloed-rechts"
+    ],
+    "fonts": [
+      "kop",
+      "tekst"
+    ]
+  },
   "slots": [
     {
       "id": "blob",
@@ -15,10 +33,22 @@
       "label": "Gradient",
       "default": "hoeken",
       "options": [
-        { "id": "hoeken", "label": "Hoeken" },
-        { "id": "gespiegeld", "label": "Gespiegeld" },
-        { "id": "ingetogen", "label": "Ingetogen" },
-        { "id": "geen", "label": "Geen" }
+        {
+          "id": "hoeken",
+          "label": "Hoeken"
+        },
+        {
+          "id": "gespiegeld",
+          "label": "Gespiegeld"
+        },
+        {
+          "id": "ingetogen",
+          "label": "Ingetogen"
+        },
+        {
+          "id": "geen",
+          "label": "Geen"
+        }
       ]
     },
     {
@@ -27,14 +57,43 @@
       "label": "Plek van de tekst",
       "default": "onder",
       "options": [
-        { "id": "onder", "label": "Onder" },
-        { "id": "boven", "label": "Boven" }
+        {
+          "id": "onder",
+          "label": "Onder"
+        },
+        {
+          "id": "boven",
+          "label": "Boven"
+        }
       ]
     },
-    { "id": "photo", "type": "image", "label": "Foto (staand)" },
-    { "id": "label", "type": "text", "label": "Label", "maxChars": 28, "default": "Behind the scenes" },
-    { "id": "title", "type": "text", "label": "Kop", "maxChars": 48, "default": "", "placeholder": "Korte kop, mag leeg blijven" },
-    { "id": "text", "type": "text", "label": "Regel eronder", "maxChars": 90, "default": "", "placeholder": "Mag leeg blijven" },
-    { "id": "logo", "type": "brand-logo", "label": "Logo", "onRole": "achtergrond", "logo": "full" }
+    {
+      "id": "photo",
+      "type": "image",
+      "label": "Foto (staand)"
+    },
+    {
+      "id": "label",
+      "type": "text",
+      "label": "Label",
+      "maxChars": 28,
+      "default": "Behind the scenes"
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "label": "Kop",
+      "maxChars": 48,
+      "default": "",
+      "placeholder": "Korte kop, mag leeg blijven"
+    },
+    {
+      "id": "text",
+      "type": "text",
+      "label": "Regel eronder",
+      "maxChars": 90,
+      "default": "",
+      "placeholder": "Mag leeg blijven"
+    }
   ]
 }
