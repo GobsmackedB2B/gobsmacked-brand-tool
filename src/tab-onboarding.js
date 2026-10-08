@@ -5,7 +5,7 @@ import { TEMPLATES } from "./templates.js";
 import { buildTemplate, defaultContent, readPhoto } from "./render.js";
 import { buildSignatureHtml, copySignature } from "./signature.js";
 import { VARIANTS } from "./gradient.js";
-import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, slugify, fitList } from "./ui.js";
+import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, slugify, fitList, photoTarget, intro } from "./ui.js";
 
 const PERSON = [
   { id: "name", label: "Naam", placeholder: "Robin Jansen", maxChars: 40 },
@@ -154,11 +154,13 @@ export function onboardingTab() {
   const personFields = PERSON.map((p) =>
     field(p.label, textInput("", (v) => { person[p.id] = v; clearTimeout(typing); typing = setTimeout(() => { team.output.refresh(); refreshSignature(); }, 250); }, { maxChars: p.maxChars, placeholder: p.placeholder }), p.hint)
   );
-  const photoName = h("span", { class: "gt-hint" }, "Staand, hoofd boven het midden");
-  const photoField = field(
-    "Foto",
-    h("div", { class: "gt-rij" }, fileInput(async (file) => { photoName.textContent = file.name; state.photo = await readPhoto(file); refreshAll(); }, "Kies een foto"), photoName)
+  const photoName = h("span", { class: "gt-hint" }, "Staand, hoofd boven het midden. Slepen kan ook.");
+  const dropZone = h("div", { class: "gt-dropzone" },
+    fileInput(async (file) => { photoName.textContent = file.name; state.photo = await readPhoto(file); refreshAll(); }, "Kies een foto"),
+    photoName
   );
+  photoTarget(dropZone, () => dropZone.querySelector("input[type=file]"), { click: false });
+  const photoField = h("div", { class: "gt-veld" }, h("span", { class: "gt-veld-naam" }, "Foto"), dropZone);
 
   const downloadAll = button("Download alles (ZIP)", (e) =>
     busy(e.currentTarget, async () => {
@@ -172,9 +174,14 @@ export function onboardingTab() {
   refreshAll();
   return h(
     "div",
+    {},
+    intro("Upload één foto en vul de gegevens in. Rechts staan alle formaten die een nieuwe collega nodig heeft, los of in één keer te downloaden."),
+    h(
+    "div",
     { class: "gt-tab" },
     h("div", { class: "gt-kolom gt-instellingen" }, h("h3", { class: "gt-kop3" }, "Nieuwe collega"), photoField, personFields, h("div", { class: "gt-acties" }, downloadAll)),
     h("div", { class: "gt-kolom gt-voorbeeld" }, h("div", { class: "gt-uitvoer-raster" }, monday.el, email.el, website.el, profile.el, team.el, signature))
+    )
   );
 }
 

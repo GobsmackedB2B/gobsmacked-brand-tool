@@ -23,15 +23,17 @@ export function button(label, onClick, kind = "leeg") {
 
 /** Groep keuzeknoppen; geeft { el, set(value) } terug. */
 export function choices(options, value, onChange, { label } = {}) {
-  const el = h("div", { class: "gt-keuzes", role: "group", "aria-label": label });
+  const visual = options.some((o) => o.thumb || o.swatch);
+  const el = h("div", { class: visual ? "gt-keuzes gt-keuzes-beeld" : "gt-keuzes", role: "group", "aria-label": label });
   const render = (current) => {
     el.replaceChildren(
       ...options.map((o) =>
         h(
           "button",
           { type: "button", class: "gt-keuze", "aria-pressed": String(o.id === current), onClick: () => { render(o.id); onChange(o.id); } },
-          o.label,
-          o.sub ? h("small", {}, o.sub) : null
+          o.thumb ? h("img", { class: "gt-keuze-beeld", src: o.thumb, alt: "" }) : null,
+          o.swatch ? h("span", { class: "gt-keuze-vlak", style: `background:${o.swatch}` }) : null,
+          h("span", {}, o.label, o.sub ? h("small", {}, o.sub) : null)
         )
       )
     );
@@ -58,6 +60,36 @@ export function fileInput(onFile, label = "Kies een foto") {
   return h("label", { class: "gt-knop gt-leeg gt-bestand" }, label, input);
 }
 
+/**
+ * Maakt een vlak (de preview) klikbaar en een plek om een foto op te slepen. De foto gaat via
+ * het bestaande bestandsveld, zodat de rest van het formulier gewoon meeloopt.
+ */
+export function photoTarget(target, getInput, { click = true } = {}) {
+  target.classList.add("gt-fotodoel");
+  if (click) {
+    target.title = "Klik of sleep een foto hierheen";
+    target.addEventListener("click", () => getInput()?.click());
+  }
+  target.addEventListener("dragover", (e) => { e.preventDefault(); target.classList.add("gt-sleep"); });
+  target.addEventListener("dragleave", () => target.classList.remove("gt-sleep"));
+  target.addEventListener("drop", (e) => {
+    e.preventDefault();
+    target.classList.remove("gt-sleep");
+    const file = [...(e.dataTransfer?.files ?? [])].find((f) => f.type.startsWith("image/"));
+    const input = getInput();
+    if (!file || !input) return;
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change"));
+  });
+}
+
+/** Korte uitleg bovenaan een tab. */
+export function intro(text) {
+  return h("p", { class: "gt-intro" }, text);
+}
+
 export function slugify(text) {
   return (
     String(text)
@@ -80,17 +112,21 @@ export function downloadBlob(name, blob) {
 
 /** Bezig-status op een knop terwijl een export loopt. */
 export async function busy(btn, fn) {
-  const label = btn.textContent;
+  const label = btn.dataset.label ?? btn.textContent;
+  btn.dataset.label = label;
   btn.disabled = true;
   btn.textContent = "Bezig…";
   try {
     await fn();
+    btn.textContent = btn.dataset.done ?? "Gedownload";
+    btn.classList.add("gt-klaar");
+    setTimeout(() => { btn.textContent = label; btn.classList.remove("gt-klaar"); }, 1800);
   } catch (err) {
     console.error(err);
     alert(err?.message || "Er ging iets mis bij het exporteren.");
+    btn.textContent = label;
   } finally {
     btn.disabled = false;
-    btn.textContent = label;
   }
 }
 

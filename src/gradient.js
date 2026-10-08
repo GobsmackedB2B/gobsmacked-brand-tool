@@ -168,3 +168,10 @@ export async function gradientLayer({ w, h, positions, seed }) {
   }
   return layerCache.get(key);
 }
+
+/** Klein voorbeeldplaatje van een variant (SVG-data-URL), voor de keuzeknoppen. */
+export function gradientThumb(variant, w, h) {
+  const scale = 120 / Math.max(w, h);
+  const tw = Math.round(w * scale), th = Math.round(h * scale);
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(backgroundSvg({ w: tw, h: th, variant, seed: 11 }));
+}

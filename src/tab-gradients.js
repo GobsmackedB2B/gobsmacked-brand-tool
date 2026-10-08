@@ -1,15 +1,15 @@
 // Tab Gradients: losse achtergronden in elk formaat, in de vijf vaste varianten.
 import { zipSync } from "fflate";
-import { VARIANTS, backgroundSvg, svgToCanvas } from "./gradient.js";
+import { VARIANTS, backgroundSvg, svgToCanvas, gradientThumb } from "./gradient.js";
 import { canvasToBlob } from "./render.js";
-import { h, button, choices, downloadBlob, busy } from "./ui.js";
+import { h, button, choices, downloadBlob, busy, intro } from "./ui.js";
 
 const FORMATS = [
-  { id: "16x9", label: "16:9", sub: "1920 × 1080", w: 1920, h: 1080 },
-  { id: "9x16", label: "9:16", sub: "1080 × 1920", w: 1080, h: 1920 },
-  { id: "4x5", label: "4:5", sub: "1080 × 1350", w: 1080, h: 1350 },
-  { id: "1x1", label: "1:1", sub: "1080 × 1080", w: 1080, h: 1080 },
-  { id: "eigen", label: "Eigen maat", sub: "breedte × hoogte" },
+  { id: "16x9", label: "Presentatie of scherm", sub: "16:9 · 1920 × 1080", w: 1920, h: 1080 },
+  { id: "4x5", label: "Social post", sub: "4:5 · 1080 × 1350", w: 1080, h: 1350 },
+  { id: "9x16", label: "Story", sub: "9:16 · 1080 × 1920", w: 1080, h: 1920 },
+  { id: "1x1", label: "Vierkant", sub: "1:1 · 1080 × 1080", w: 1080, h: 1080 },
+  { id: "eigen", label: "Eigen maat", sub: "breedte × hoogte in px" },
 ];
 
 const newSeed = () => Math.floor(Math.random() * 1e9);
@@ -38,6 +38,7 @@ export function gradientsTab() {
     const clamp = (v) => Math.max(100, Math.min(6000, Math.round(Number(v) || 0)));
     state.w = clamp(wInput.value);
     state.h = clamp(hInput.value);
+    renderVariants();
     draw();
   };
   wInput.addEventListener("change", readCustom);
@@ -49,10 +50,17 @@ export function gradientsTab() {
     custom.hidden = id !== "eigen";
     if (f.w) Object.assign(state, { w: f.w, h: f.h });
     else readCustom();
+    renderVariants();
     draw();
   }, { label: "Formaat" });
 
-  const variants = choices(VARIANTS, state.variant, (id) => { state.variant = id; draw(); }, { label: "Variant" });
+  // Varianten met een voorbeeldje in de verhouding van het gekozen formaat.
+  const variantHost = h("div");
+  let variants;
+  const renderVariants = () => {
+    variants = choices(VARIANTS.map((v) => ({ ...v, thumb: gradientThumb(v.id, state.w, state.h) })), state.variant, (id) => { state.variant = id; draw(); }, { label: "Variant" });
+    variantHost.replaceChildren(variants.el);
+  };
 
   const swapBtn = button("Wissel kleuren", () => {
     state.swap = !state.swap;
@@ -76,16 +84,21 @@ export function gradientsTab() {
     })
   );
 
+  renderVariants();
   draw();
   return h(
     "div",
-    { class: "gt-tab" },
-    h("div", { class: "gt-kolom gt-instellingen" },
-      h("h3", { class: "gt-kop3" }, "Formaat"), formats.el, custom,
-      h("h3", { class: "gt-kop3" }, "Variant"), variants.el,
-      h("div", { class: "gt-rij" }, button("Nieuwe vorm", () => { state.seed = newSeed(); draw(); }), swapBtn),
-      h("div", { class: "gt-acties" }, downloadOne, downloadAll)
-    ),
-    h("div", { class: "gt-kolom gt-voorbeeld" }, stage, info)
+    {},
+    intro("Kies waar je de achtergrond voor gebruikt en welke variant. Niet mooi? Klik op Nieuwe vorm."),
+    h(
+      "div",
+      { class: "gt-tab" },
+      h("div", { class: "gt-kolom gt-instellingen" },
+        h("h3", { class: "gt-kop3" }, "Waarvoor"), formats.el, custom,
+        h("h3", { class: "gt-kop3" }, "Variant"), variantHost,
+        h("div", { class: "gt-rij" }, button("Nieuwe vorm", () => { state.seed = newSeed(); draw(); }), swapBtn)
+      ),
+      h("div", { class: "gt-kolom gt-voorbeeld" }, stage, info, h("div", { class: "gt-acties" }, downloadOne, downloadAll))
+    )
   );
 }

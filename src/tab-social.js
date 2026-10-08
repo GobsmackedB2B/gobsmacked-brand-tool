@@ -3,49 +3,71 @@ import { zipSync } from "fflate";
 import { PDFDocument } from "pdf-lib";
 import { TEMPLATES, SOCIAL_IDS } from "./templates.js";
 import { buildTemplate, defaultContent, slotsFor, slideContents, readPhoto, rasterize, canvasToBlob } from "./render.js";
-import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, fitList } from "./ui.js";
+import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, fitList, photoTarget, intro } from "./ui.js";
+import { gradientThumb } from "./gradient.js";
 
 const newSeed = () => Math.floor(Math.random() * 1e9);
 const today = () => new Date().toISOString().slice(0, 10);
 
 export function socialTab() {
-  const host = h("div", { class: "gt-tab gt-tab-social" });
+  const host = h("div", { class: "gt-tab-social" });
+  const editors = {}; // per template bewaard zolang de pagina open is, zodat wisselen niets wist
+  const cards = {};
   const picker = h(
     "div",
     { class: "gt-kaarten" },
     SOCIAL_IDS.map((id) => {
       const { spec } = TEMPLATES[id];
       const kind = spec.carousel ? "Carrousel" : spec.type === "social-story" ? "Story" : "Post";
-      return h(
+      const thumb = preview({ maxWidth: 140, maxHeight: 175 });
+      buildTemplate(id, spec.carousel ? slideContents(spec, defaultContent(spec), spec.carousel.slides)[0] : defaultContent(spec), { seed: 11 }).then(thumb.update);
+      cards[id] = h(
         "button",
         { type: "button", class: "gt-kaart", onClick: () => open(id) },
+        h("span", { class: "gt-kaart-beeld" }, thumb.el),
         h("span", { class: "gt-kaart-soort" }, kind),
         h("span", { class: "gt-kaart-naam" }, spec.name),
         h("span", { class: "gt-kaart-maat" }, `${spec.width} × ${spec.height}`)
       );
+      return cards[id];
     })
   );
   const editorHost = h("div");
-  host.append(h("div", { class: "gt-breed" }, picker), editorHost);
+  host.append(
+    intro("Kies een template, vul foto en tekst in en download. Je kunt een foto ook op het voorbeeld slepen."),
+    h("div", { class: "gt-breed" }, picker),
+    editorHost
+  );
 
   function open(id) {
-    for (const card of picker.children) card.setAttribute("aria-pressed", String(card.querySelector(".gt-kaart-naam").textContent === TEMPLATES[id].spec.name));
-    editorHost.replaceChildren(TEMPLATES[id].spec.carousel ? carouselEditor(id) : postEditor(id));
+    for (const [cid, card] of Object.entries(cards)) card.setAttribute("aria-pressed", String(cid === id));
+    editors[id] ??= TEMPLATES[id].spec.carousel ? carouselEditor(id) : postEditor(id);
+    editorHost.replaceChildren(editors[id]);
   }
   open(SOCIAL_IDS[0]);
   return host;
 }
 
-/** Formuliervelden voor een set slots. */
-function slotFields(slots, content, onChange) {
+// Volgorde in het formulier: eerst de inhoud (foto, tekst), dan de vorm (keuzes, gradient).
+const ORDER = { image: 0, text: 1, date: 1, select: 1, variant: 2 };
+const orderOf = (slot) => (slot.id === "blob" ? 3 : ORDER[slot.type] ?? 2);
+
+/** Formuliervelden voor een set slots. size: { w, h } van het template, voor de gradientvoorbeelden. */
+function slotFields(slots, content, onChange, size) {
   return slots
     .filter((s) => s.type !== "brand-logo" && s.id !== "counter")
+    .sort((a, b) => orderOf(a) - orderOf(b))
     .map((slot) => {
       if (slot.type === "variant") {
-        return field(slot.label, choices(slot.options, content[slot.id], (v) => onChange(slot.id, v), { label: slot.label }).el);
+        const options = slot.options.map((o) =>
+          slot.id === "blob" && size
+            ? { ...o, thumb: o.id === "geen" ? null : gradientThumb(o.id, size.w, size.h), swatch: o.id === "geen" ? "#090715" : null }
+            : o.preview ? { ...o, swatch: o.preview } : o
+        );
+        return field(slot.label, choices(options, content[slot.id], (v) => onChange(slot.id, v), { label: slot.label }).el);
       }
       if (slot.type === "image") {
-        const name = h("span", { class: "gt-hint" }, content[slot.id] ? "Foto gekozen" : "Nog geen foto");
+        const name = h("span", { class: "gt-hint" }, content[slot.id] ? "Foto gekozen" : "Of sleep een foto op het voorbeeld");
         return field(
           slot.label,
           h("div", { class: "gt-rij" }, fileInput(async (file) => { name.textContent = file.name; onChange(slot.id, await readPhoto(file)); }), name)
@@ -95,16 +117,18 @@ function postEditor(id) {
   );
 
   refresh();
+  const size = { w: spec.width, h: spec.height };
+  const form = h("div", { class: "gt-kolom gt-instellingen" },
+    h("h3", { class: "gt-kop3" }, spec.name),
+    slotFields(spec.slots, content, onChange, size),
+    hasGradient ? h("div", { class: "gt-rij" }, button("Nieuwe gradientvorm", () => { seed = newSeed(); refresh(); })) : null
+  );
+  if (spec.slots.some((s) => s.type === "image")) photoTarget(view.el, () => form.querySelector("input[type=file]"));
   return h(
     "div",
     { class: "gt-tab" },
-    h("div", { class: "gt-kolom gt-instellingen" },
-      h("h3", { class: "gt-kop3" }, spec.name),
-      slotFields(spec.slots, content, onChange),
-      hasGradient ? h("div", { class: "gt-rij" }, button("Nieuwe gradientvorm", () => { seed = newSeed(); refresh(); })) : null,
-      actions
-    ),
-    h("div", { class: "gt-kolom gt-voorbeeld" }, view.el, warnings)
+    form,
+    h("div", { class: "gt-kolom gt-voorbeeld" }, view.el, warnings, actions)
   );
 }
 
@@ -165,18 +189,20 @@ function carouselEditor(id) {
     const own = slotsFor(spec, slide.layout).filter(
       (s) => !sharedIds.has(s.id) && s.id !== carousel.counterSlot && s.id !== carousel.layoutSlot
     );
-    slideForm.replaceChildren(
+    // Lege plekken (null) en lijsten van velden plat slaan; replaceChildren zet die anders als tekst neer.
+    const parts = [
       h("h3", { class: "gt-kop3" }, `Stap 2 · Tekst en foto van slide ${current + 1}`),
       canEditSlides
         ? field("Layout van deze slide", choices(layoutSlot.options, slide.layout, (v) => { slides[current] = { ...slideFor({ layout: v }), ...pick(slide, v) }; renderTabs(); renderSlideForm(); refresh(); }).el)
         : null,
       ...(own.length
-        ? slotFields(own, slide, (k, v) => { slide[k] = v; renderTabs(); refresh(); })
+        ? slotFields(own, slide, (k, v) => { slide[k] = v; renderTabs(); refresh(); }, { w: spec.width, h: spec.height })
         : [h("p", { class: "gt-hint" }, "Deze slide heeft geen eigen tekst of foto.")]),
       canEditSlides
         ? h("div", { class: "gt-rij" }, moveBtn(-1, "← Eerder"), moveBtn(1, "Later →"), removeBtn)
         : null
-    );
+    ];
+    slideForm.replaceChildren(...parts.flat().filter(Boolean));
     position.textContent = `Slide ${current + 1} van ${slides.length} · ${layoutLabel(slide.layout)}`;
     prevBtn.disabled = current === 0;
     nextBtn.disabled = current === slides.length - 1;
@@ -199,7 +225,7 @@ function carouselEditor(id) {
       ),
       canEditSlides && slides.length < carousel.maxSlides
         ? h("button", { type: "button", class: "gt-slide-item gt-plus", onClick: () => { slides.splice(slides.length - 1, 0, slideFor(carousel.newSlide ?? { layout: slides[0].layout })); select(slides.length - 2); } }, "+ Slide toevoegen")
-        : null
+        : ""
     );
   };
 
@@ -252,6 +278,7 @@ function carouselEditor(id) {
   renderTabs();
   renderSlideForm();
   refresh();
+  photoTarget(view.el, () => slideForm.querySelector("input[type=file]"));
   const sharedSlots = spec.slots.filter((s) => sharedIds.has(s.id));
   return h(
     "div",
@@ -264,10 +291,9 @@ function carouselEditor(id) {
       slideForm,
       h("hr", { class: "gt-lijn" }),
       h("h3", { class: "gt-kop3" }, "Stap 3 · Voor alle slides"),
-      slotFields(sharedSlots, shared, (k, v) => { shared[k] = v; refresh(); }),
-      h("div", { class: "gt-rij" }, button("Nieuwe gradientvorm", () => { seed = newSeed(); refresh(); })),
-      actions
+      slotFields(sharedSlots, shared, (k, v) => { shared[k] = v; refresh(); }, { w: spec.width, h: spec.height }),
+      h("div", { class: "gt-rij" }, button("Nieuwe gradientvorm", () => { seed = newSeed(); refresh(); }))
     ),
-    h("div", { class: "gt-kolom gt-voorbeeld" }, navBar, view.el, warnings)
+    h("div", { class: "gt-kolom gt-voorbeeld" }, navBar, view.el, warnings, actions)
   );
 }
