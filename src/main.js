@@ -1,6 +1,8 @@
 // Gobsmacked maaktool voor gobsmacked.agency/brand.
-// Laadt zich in <div id="gobsmacked-tool"></div> op de Webflow-pagina. Niets wordt opgeslagen:
-// alles gebeurt in de browser en wat klaar is, wordt direct gedownload.
+// Laadt zich op de Webflow-pagina in:
+//   <div id="gobsmacked-tool"></div>                 de hele tool met tabs
+//   <div data-gobsmacked-tool="gradients"></div>     één onderdeel los (gradients, social, onboarding)
+// Niets wordt opgeslagen: alles gebeurt in de browser en wat klaar is, wordt direct gedownload.
 import css from "./style.css";
 import { h } from "./ui.js";
 import { gradientsTab } from "./tab-gradients.js";
@@ -17,6 +19,13 @@ function mount(host) {
   if (host.dataset.gtMounted) return;
   host.dataset.gtMounted = "true";
   if (!document.getElementById("gt-style")) document.head.append(h("style", { id: "gt-style" }, css));
+
+  // Eén onderdeel los, zonder tabs (bv. de gradientmaker midden in Beeldtaal).
+  const only = TABS.find((t) => t.id === host.dataset.gobsmackedTool);
+  if (only) {
+    host.replaceChildren(h("div", { class: "gt gt-los" }, only.make()));
+    return;
+  }
 
   const panels = {};
   const body = h("div", { class: "gt-body" });
