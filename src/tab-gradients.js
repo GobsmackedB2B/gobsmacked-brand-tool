@@ -5,11 +5,11 @@ import { canvasToBlob } from "./render.js";
 import { h, button, choices, downloadBlob, busy } from "./ui.js";
 
 const FORMATS = [
-  { id: "16x9", label: "Presentatie", w: 1920, h: 1080 },
-  { id: "4x5", label: "Post", w: 1080, h: 1350 },
-  { id: "9x16", label: "Story", w: 1080, h: 1920 },
-  { id: "1x1", label: "Vierkant", w: 1080, h: 1080 },
-  { id: "eigen", label: "Eigen maat" },
+  { id: "16x9", label: "Presentatie", sub: "16:9", w: 1920, h: 1080 },
+  { id: "4x5", label: "Post", sub: "4:5", w: 1080, h: 1350 },
+  { id: "9x16", label: "Story", sub: "9:16", w: 1080, h: 1920 },
+  { id: "1x1", label: "Vierkant", sub: "1:1", w: 1080, h: 1080 },
+  { id: "eigen", label: "Eigen maat", sub: "b × h" },
 ];
 
 const newSeed = () => Math.floor(Math.random() * 1e9);
