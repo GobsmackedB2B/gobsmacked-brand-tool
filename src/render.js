@@ -81,9 +81,18 @@ export async function buildTemplate(id, content, { seed = 7, overlay = false } =
   const root = doc.getElementById("gt-tpl");
   fill(root, values);
   // Uitsnede: content["photo__pos"] = "40% 20%" verschuift de foto binnen zijn kader.
+  // Onboarding: "__oy" schuift de foto verticaal binnen zijn kader (object-position),
+  // "__ty" verschuift het ankerpunt van de inzoom (transform-origin), beide in %.
   const posCss = spec.slots
-    .filter((slot) => slot.type === "image" && content[`${slot.id}__pos`])
-    .map((slot) => `img[data-slot="${slot.id}"] { object-position: ${content[`${slot.id}__pos`]} !important; }`)
+    .filter((slot) => slot.type === "image")
+    .map((slot) => {
+      const sel = `img[data-slot="${slot.id}"]`;
+      const rules = [];
+      if (content[`${slot.id}__pos`]) rules.push(`object-position: ${content[`${slot.id}__pos`]} !important;`);
+      if (content[`${slot.id}__oy`] != null) rules.push(`object-position: 50% ${content[`${slot.id}__oy`]}% !important;`);
+      if (content[`${slot.id}__ty`] != null) rules.push(`transform-origin: 50% ${content[`${slot.id}__ty`]}% !important;`);
+      return rules.length ? `${sel} { ${rules.join(" ")} }` : "";
+    })
     .join(" ");
   const overlayCss = overlay ? ".frame { background: transparent !important; } .photo { visibility: hidden !important; }" : "";
   const css = `${FONT_FACE_CSS} ${tokenCss(spec, BRAND)} ${gradientCss} ${posCss} ${overlayCss}`;
