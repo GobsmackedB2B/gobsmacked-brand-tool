@@ -1,0 +1,75 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .photo { position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover; object-position: center; }
+  /* Subtiel: alleen aan de kant van de tekst een donkere overloop, de foto blijft het verhaal. */
+  .fade { position: absolute; inset: 0; pointer-events: none; }
+  .frame[data-position="onder"] .fade {
+    background: linear-gradient(180deg, transparent 52%, color-mix(in srgb, var(--color-achtergrond) 78%, transparent) 88%);
+  }
+  .frame[data-position="boven"] .fade {
+    background:
+      linear-gradient(0deg, transparent 52%, color-mix(in srgb, var(--color-achtergrond) 78%, transparent) 88%),
+      linear-gradient(180deg, transparent 80%, color-mix(in srgb, var(--color-achtergrond) 55%, transparent) 100%);
+  }
+  /* Gradient op een laag pitje: een gloed vanuit de hoeken, het midden blijft foto. */
+  .blobs { position: absolute; inset: 0; opacity: 0.6; pointer-events: none; }
+  .blobs[data-blob="hoeken"] { --blob-p: 62% 30% at -8% 104%; --blob-a: 56% 26% at 108% -4%; }
+  .blobs[data-blob="gespiegeld"] { --blob-p: 62% 30% at 108% 104%; --blob-a: 56% 26% at -8% -4%; }
+  .blobs[data-blob="ingetogen"] { --blob-p: 40% 20% at -10% 106%; --blob-a: 34% 17% at 110% -6%; }
+  .blobs[data-blob="geen"] { display: none; }
+
+  .text { position: absolute; left: 75px; right: 75px; }
+  .frame[data-position="onder"] .text { bottom: 470px; }
+  .frame[data-position="boven"] .text { top: 290px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    height: 54px;
+    margin: 0;
+    padding: 0 26px;
+    border: 2px solid var(--color-op-achtergrond);
+    border-radius: 999px;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .title {
+    margin: 28px 0 0;
+    max-height: 3.1em;
+    overflow: hidden;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    font-size: 80px;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+  .line { margin: 22px 0 0; max-height: 2.8em; overflow: hidden; font-size: 34px; line-height: 1.35; }
+  .badge:empty, .title:empty, .line:empty { display: none; }
+  .text > :first-child { margin-top: 0; }
+  .logo { position: absolute; left: 50%; bottom: 360px; transform: translateX(-50%); width: 200px; }
+  .frame[data-position="boven"] .logo { bottom: 360px; }
+</style>
+<div class="frame" data-slot="position" data-slot-attr="data-position" data-position="onder">
+  <img class="photo" data-slot="photo" alt="" />
+  <div class="fade"></div>
+  <div class="blobs" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken"></div>
+  <div class="text">
+    <p class="badge" data-slot="label" data-fit-frame></p>
+    <h1 class="title" data-slot="title" data-fit></h1>
+    <p class="line" data-slot="text" data-fit></p>
+  </div>
+  <img class="logo" data-slot="logo" alt="" />
+</div>

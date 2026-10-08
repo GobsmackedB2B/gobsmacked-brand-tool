@@ -15,7 +15,7 @@ export function socialTab() {
     { class: "gt-kaarten" },
     SOCIAL_IDS.map((id) => {
       const { spec } = TEMPLATES[id];
-      const kind = spec.carousel ? "Carrousel" : "Post";
+      const kind = spec.carousel ? "Carrousel" : spec.type === "social-story" ? "Story" : "Post";
       return h(
         "button",
         { type: "button", class: "gt-kaart", onClick: () => open(id) },
@@ -55,7 +55,7 @@ function slotFields(slots, content, onChange) {
       const count = h("span", { class: "gt-teller" });
       const setCount = (v) => (count.textContent = slot.maxChars ? `${v.length} / ${slot.maxChars}` : "");
       setCount(content[slot.id] ?? "");
-      const input = textInput(content[slot.id], (v) => { setCount(v); onChange(slot.id, v); }, { maxChars: slot.maxChars, multiline });
+      const input = textInput(content[slot.id], (v) => { setCount(v); onChange(slot.id, v); }, { maxChars: slot.maxChars, multiline, placeholder: slot.placeholder });
       return field(slot.label, h("div", { class: "gt-invoer-wrap" }, input, count));
     });
 }
@@ -86,7 +86,12 @@ function postEditor(id) {
     "div",
     { class: "gt-acties" },
     button("Download PNG", (e) => busy(e.currentTarget, async () => downloadBlob(`${base}.png`, await exportBuilt(built, "png"))), "vol"),
-    button("Download JPG", (e) => busy(e.currentTarget, async () => downloadBlob(`${base}.jpg`, await exportBuilt(built, "jpg"))))
+    button("Download JPG", (e) => busy(e.currentTarget, async () => downloadBlob(`${base}.jpg`, await exportBuilt(built, "jpg")))),
+    spec.overlayExport
+      ? button("Alleen overlay (transparante PNG)", (e) =>
+          busy(e.currentTarget, async () => downloadBlob(`${base}-overlay.png`, await exportBuilt(await buildTemplate(id, content, { seed, overlay: true }), "png")))
+        )
+      : null
   );
 
   refresh();

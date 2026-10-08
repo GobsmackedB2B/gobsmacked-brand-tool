@@ -6,6 +6,8 @@ import statementHtml from "../templates/gob-statement/template.html";
 import statement from "../templates/gob-statement/template.json";
 import quoteHtml from "../templates/gob-quote/template.html";
 import quote from "../templates/gob-quote/template.json";
+import storyHtml from "../templates/gob-story/template.html";
+import story from "../templates/gob-story/template.json";
 import teamHtml from "../templates/gob-team/template.html";
 import team from "../templates/gob-team/template.json";
 import caseHtml from "../templates/gob-case-carousel/template.html";
@@ -26,6 +28,7 @@ const all = [
   [statement, statementHtml],
   [quote, quoteHtml],
   [team, teamHtml],
+  [story, storyHtml],
   [caseCarousel, caseHtml],
   [vacancy, vacancyHtml],
   [monday, mondayHtml],
@@ -37,4 +40,4 @@ const all = [
 export const TEMPLATES = Object.fromEntries(all.map(([spec, html]) => [spec.id, { spec, html }]));
 
 /** Wat de tool aanbiedt onder Social posts, in deze volgorde. */
-export const SOCIAL_IDS = ["gob-photo", "gob-statement", "gob-quote", "gob-team", "gob-case-carousel", "gob-vacancy"];
+export const SOCIAL_IDS = ["gob-photo", "gob-statement", "gob-quote", "gob-team", "gob-story", "gob-case-carousel", "gob-vacancy"];

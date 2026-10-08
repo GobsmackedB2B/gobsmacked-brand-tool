@@ -8,6 +8,7 @@ import { TEMPLATES } from "./templates.js";
 import { templateGradientPositions, gradientLayer } from "./gradient.js";
 
 const TEXT_LIKE = new Set(["text", "date", "select"]);
+const TRANSPARENT_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 let placeholderUrl = null;
 /** Neutrale foto-placeholder zolang er nog niets is gekozen. */
@@ -58,11 +59,12 @@ function fill(root, values) {
  * Gevuld template: { width, height, css, bodyHtml }. opts.seed bepaalt de vorm van de
  * organische gradient (zelfde seed = zelfde beeld in preview en export).
  */
-export async function buildTemplate(id, content, { seed = 7 } = {}) {
+export async function buildTemplate(id, content, { seed = 7, overlay = false } = {}) {
   const { spec, html } = TEMPLATES[id];
   const withPhotos = { ...content };
   for (const slot of spec.slots) {
-    if (slot.type === "image" && !withPhotos[slot.id]) withPhotos[slot.id] = placeholderPhoto();
+    // overlay: alleen de laag erboven (tekst, overloop, gradient, logo), transparant waar de foto zat.
+    if (slot.type === "image" && (overlay || !withPhotos[slot.id])) withPhotos[slot.id] = overlay ? TRANSPARENT_PIXEL : placeholderPhoto();
   }
   const values = resolveContent(spec, withPhotos, { templateBase: "", brandBase: "", brand: BRAND });
 
@@ -78,7 +80,8 @@ export async function buildTemplate(id, content, { seed = 7 } = {}) {
   const doc = new DOMParser().parseFromString(`<div id="gt-tpl">${html}</div>`, "text/html");
   const root = doc.getElementById("gt-tpl");
   fill(root, values);
-  const css = `${FONT_FACE_CSS} ${tokenCss(spec, BRAND)} ${gradientCss}`;
+  const overlayCss = overlay ? ".frame { background: transparent !important; } .photo { visibility: hidden !important; }" : "";
+  const css = `${FONT_FACE_CSS} ${tokenCss(spec, BRAND)} ${gradientCss} ${overlayCss}`;
   return { spec, width: spec.width, height: spec.height, css, root };
 }
 
