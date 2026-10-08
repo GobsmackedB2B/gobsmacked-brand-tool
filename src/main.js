@@ -23,7 +23,9 @@ function mount(host) {
   // Eén onderdeel los, zonder tabs (bv. de gradientmaker midden in Beeldtaal).
   const only = TABS.find((t) => t.id === host.dataset.gobsmackedTool);
   if (only) {
-    host.replaceChildren(h("div", { class: "gt gt-los" }, only.make()));
+    const panel = h("div", { class: "gt gt-los" }, only.make());
+    host.replaceChildren(panel);
+    fullBleed(host, panel);
     return;
   }
 
@@ -45,6 +47,30 @@ function mount(host) {
   try { start = TABS.find((t) => t.id === localStorage.getItem("gt-tab"))?.id ?? start; } catch {}
   const fromHash = TABS.find((t) => location.hash === `#maak-${t.id}`);
   show(fromHash?.id ?? start);
+}
+
+/**
+ * Laat het witte vlak over de hele breedte van de sectie lopen (een witte band), terwijl de
+ * inhoud uitgelijnd blijft met de tekst van de sectie. Webflow bepaalt de kolombreedte, dus
+ * dit wordt gemeten en bij elke maatverandering opnieuw gezet.
+ */
+function fullBleed(host, panel) {
+  const section = host.closest("section") ?? document.body;
+  const apply = () => {
+    const s = section.getBoundingClientRect();
+    const r = host.getBoundingClientRect();
+    const left = Math.max(0, Math.round(r.left - s.left));
+    const right = Math.max(0, Math.round(s.right - r.right));
+    Object.assign(panel.style, {
+      marginLeft: `-${left}px`,
+      marginRight: `-${right}px`,
+      paddingLeft: `${Math.max(left, 16)}px`,
+      paddingRight: `${Math.max(right, 16)}px`,
+    });
+  };
+  apply();
+  new ResizeObserver(apply).observe(section);
+  window.addEventListener("resize", apply);
 }
 
 function init() {

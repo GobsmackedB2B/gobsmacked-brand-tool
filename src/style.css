@@ -22,6 +22,8 @@
 .gt button, .gt input, .gt select, .gt textarea { font: inherit; color: inherit; }
 .gt [hidden] { display: none !important; }
 @media (max-width: 600px) { .gt { padding: 20px 16px; } }
+.gt-los { padding-top: 56px; padding-bottom: 56px; }
+@media (max-width: 600px) { .gt-los { padding-top: 32px; padding-bottom: 32px; } }
 
 .gt-tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--gt-lijn); margin-bottom: 32px; }
 .gt-tabknop {
