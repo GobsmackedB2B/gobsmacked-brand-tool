@@ -15,7 +15,7 @@ export function socialTab() {
     { class: "gt-kaarten" },
     SOCIAL_IDS.map((id) => {
       const { spec } = TEMPLATES[id];
-      const kind = spec.carousel ? "Carrousel" : spec.type === "web-banner" ? "Banner" : "Post";
+      const kind = spec.carousel ? "Carrousel" : "Post";
       return h(
         "button",
         { type: "button", class: "gt-kaart", onClick: () => open(id) },
