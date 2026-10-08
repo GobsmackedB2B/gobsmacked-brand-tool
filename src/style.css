@@ -132,7 +132,14 @@
 .gt-handtekening { background: #fff; color: #000; padding: 20px; overflow-x: auto; }
 
 /* Uitleg per tab */
-.gt-intro { margin: -8px 0 28px; max-width: 680px; font-size: 16px; color: var(--gt-zacht); }
+.gt-uitlegblok { margin: -4px 0 32px; padding: 20px 24px; border: 1px solid var(--gt-lijn); }
+.gt-intro { margin: 0; max-width: 760px; font-size: 16px; }
+.gt-stappen { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .gt-stappen { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
+.gt-stappen li { display: flex; gap: 10px; font-size: 14px; color: var(--gt-zacht); }
+.gt-stap-nr { font-weight: 700; color: var(--gt-arc); }
+.gt-tip { margin: 16px 0 0; font-size: 13px; color: var(--gt-zacht); }
+.gt-tip strong { color: var(--gt-wit); }
 
 /* Keuzes met een voorbeeldje (gradientvarianten, layouts) */
 .gt-keuzes-beeld .gt-keuze { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px; }

@@ -85,9 +85,17 @@ export function photoTarget(target, getInput, { click = true } = {}) {
   });
 }
 
-/** Korte uitleg bovenaan een tab. */
-export function intro(text) {
-  return h("p", { class: "gt-intro" }, text);
+/** Korte uitleg bovenaan een tab: waarvoor het is, en in drie stappen hoe het werkt. */
+export function intro(text, steps = [], tip) {
+  return h(
+    "div",
+    { class: "gt-uitlegblok" },
+    h("p", { class: "gt-intro" }, text),
+    steps.length
+      ? h("ol", { class: "gt-stappen" }, steps.map((step, i) => h("li", {}, h("span", { class: "gt-stap-nr" }, String(i + 1).padStart(2, "0")), h("span", {}, step))))
+      : null,
+    tip ? h("p", { class: "gt-tip" }, h("strong", {}, "Tip: "), tip) : null
+  );
 }
 
 export function slugify(text) {
