@@ -34,15 +34,11 @@ export function socialTab() {
   );
   const editorHost = h("div");
   host.append(
-    intro(
-      "Posts, stories en carrousels voor LinkedIn en Instagram, in de huisstijl. Logo, kleuren en opmaak staan al goed; jij vult alleen foto en tekst in.",
-      [
-        "Kies een template.",
-        "Vul foto en tekst in. Een foto kun je ook op het voorbeeld slepen. Past een tekst niet, dan zie je een melding onder het voorbeeld.",
-        "Download als PNG of JPG. Carrousels download je als PDF voor LinkedIn, of als losse slides.",
-      ],
-      "Wat je invult blijft staan als je even een ander template bekijkt, tot je de pagina ververst. Er wordt niets opgeslagen."
-    ),
+    intro("Posts, stories en carrousels in de huisstijl.", [
+      "Kies een template.",
+      "Vul foto en tekst in.",
+      "Download.",
+    ]),
     h("div", { class: "gt-breed" }, picker),
     editorHost
   );

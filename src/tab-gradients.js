@@ -89,15 +89,11 @@ export function gradientsTab() {
   return h(
     "div",
     {},
-    intro(
-      "Achtergronden in de huisstijl: Midnight Blue met een gloed van Purple en Arctic Blue. Voor slides, posts, stories of een scherm.",
-      [
-        "Kies waarvoor je de achtergrond gebruikt. Het formaat past zich aan.",
-        "Kies een variant. Nieuwe vorm geeft dezelfde variant in een andere uitvoering.",
-        "Download als PNG, of alle vijf de varianten in één keer.",
-      ],
-      "Wissel per post van variant, dan blijft een feed afwisselend."
-    ),
+    intro("Achtergronden in de huisstijl.", [
+      "Kies waarvoor je hem gebruikt.",
+      "Kies een variant.",
+      "Download als PNG.",
+    ]),
     h(
       "div",
       { class: "gt-tab" },

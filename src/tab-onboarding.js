@@ -175,15 +175,11 @@ export function onboardingTab() {
   return h(
     "div",
     {},
-    intro(
-      "Alles wat een nieuwe collega nodig heeft, uit één foto: Monday, e-mailfoto en handtekening, website, LinkedIn en Teams, en een teampost.",
-      [
-        "Upload een staande foto, met het hoofd boven het midden.",
-        "Vul naam, functie en contactgegevens in. Lege velden blijven leeg.",
-        "Download per formaat of alles in één ZIP. De handtekening kopieer je en plak je in Outlook.",
-      ],
-      "Bij Monday kies je zelf de kleur van de ring. Bij de foto's kun je de uitsnede aanpassen."
-    ),
+    intro("Alle formaten voor een nieuwe collega, uit één foto.", [
+      "Upload een staande foto.",
+      "Vul de gegevens in.",
+      "Download los of alles in één ZIP.",
+    ]),
     h(
     "div",
     { class: "gt-tab" },
