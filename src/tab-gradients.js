@@ -2,14 +2,14 @@
 import { zipSync } from "fflate";
 import { VARIANTS, backgroundSvg, svgToCanvas, gradientThumb } from "./gradient.js";
 import { canvasToBlob } from "./render.js";
-import { h, button, choices, downloadBlob, busy, intro } from "./ui.js";
+import { h, button, choices, downloadBlob, busy } from "./ui.js";
 
 const FORMATS = [
-  { id: "16x9", label: "Presentatie of scherm", sub: "16:9 · 1920 × 1080", w: 1920, h: 1080 },
-  { id: "4x5", label: "Social post", sub: "4:5 · 1080 × 1350", w: 1080, h: 1350 },
-  { id: "9x16", label: "Story", sub: "9:16 · 1080 × 1920", w: 1080, h: 1920 },
-  { id: "1x1", label: "Vierkant", sub: "1:1 · 1080 × 1080", w: 1080, h: 1080 },
-  { id: "eigen", label: "Eigen maat", sub: "breedte × hoogte in px" },
+  { id: "16x9", label: "Presentatie", w: 1920, h: 1080 },
+  { id: "4x5", label: "Post", w: 1080, h: 1350 },
+  { id: "9x16", label: "Story", w: 1080, h: 1920 },
+  { id: "1x1", label: "Vierkant", w: 1080, h: 1080 },
+  { id: "eigen", label: "Eigen maat" },
 ];
 
 const newSeed = () => Math.floor(Math.random() * 1e9);
@@ -88,12 +88,7 @@ export function gradientsTab() {
   draw();
   return h(
     "div",
-    {},
-    intro("Achtergronden in de huisstijl.", [
-      "Kies waarvoor je hem gebruikt.",
-      "Kies een variant.",
-      "Download als PNG.",
-    ]),
+    { class: "gt-compact" },
     h(
       "div",
       { class: "gt-tab" },

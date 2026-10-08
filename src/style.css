@@ -163,3 +163,18 @@
 @media (max-width: 700px) {
   .gt-kaarten { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 132px; overflow-x: auto; padding-bottom: 8px; }
 }
+
+/* Gradientmaker: compact, de uitleg staat al in de sectie erboven */
+.gt-compact .gt-tab { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 32px; }
+@media (max-width: 900px) { .gt-compact .gt-tab { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+.gt-compact .gt-kop3 { margin: 18px 0 8px; }
+.gt-compact .gt-kop3:first-child { margin-top: 0; }
+.gt-compact .gt-keuzes { gap: 6px; }
+.gt-compact .gt-keuze { padding: 7px 12px; font-size: 13px; }
+.gt-compact .gt-keuzes-beeld .gt-keuze { padding: 5px; gap: 4px; font-size: 12px; }
+.gt-compact .gt-keuze-beeld { height: 30px; max-width: 54px; }
+.gt-compact .gt-rij { margin-top: 10px; }
+.gt-compact .gt-knop { padding: 9px 14px; font-size: 13px; }
+.gt-compact .gt-podium { padding: 12px; }
+.gt-compact .gt-podium svg { max-height: 340px; }
+.gt-compact .gt-acties { margin-top: 12px; }
