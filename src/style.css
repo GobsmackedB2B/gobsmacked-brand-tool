@@ -52,7 +52,7 @@
 .gt-leeg { background: transparent; color: var(--gt-arc) !important; }
 .gt-leeg[aria-pressed="true"] { background: rgba(33, 253, 229, 0.14); }
 .gt-knop:disabled { opacity: 0.55; cursor: wait; }
-.gt-knop:focus-visible, .gt-keuze:focus-visible, .gt-tabknop:focus-visible, .gt-kaart:focus-visible, .gt-slide-tab:focus-visible, .gt-invoer:focus-visible {
+.gt-knop:focus-visible, .gt-keuze:focus-visible, .gt-tabknop:focus-visible, .gt-kaart:focus-visible, .gt-slide-item:focus-visible, .gt-invoer:focus-visible {
   outline: 2px solid var(--gt-arc); outline-offset: 2px;
 }
 .gt-bestand { position: relative; overflow: hidden; }
@@ -103,13 +103,22 @@
 
 .gt-meldingen { margin: 12px 0 0; padding: 10px 14px 10px 30px; border: 1px solid var(--gt-arc); font-size: 13px; }
 
-.gt-slides { display: flex; flex-wrap: wrap; gap: 6px; }
-.gt-slide-tab {
-  min-width: 44px; background: transparent; border: 1px solid var(--gt-lijn); border-radius: 0;
-  padding: 8px 10px; cursor: pointer; font-weight: 600; font-size: 14px;
+.gt-slides { display: flex; flex-direction: column; gap: 6px; }
+.gt-slide-item {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  background: transparent; border: 1px solid var(--gt-lijn); border-radius: 0; padding: 10px 14px; cursor: pointer;
 }
-.gt-slide-tab[aria-selected="true"] { border-color: var(--gt-arc); color: var(--gt-arc); }
-.gt-plus { color: var(--gt-arc); }
+.gt-slide-item:hover { border-color: var(--gt-wit); }
+.gt-slide-item[aria-selected="true"] { border-color: var(--gt-arc); background: rgba(33, 253, 229, 0.08); }
+.gt-slide-nr { font-weight: 700; font-size: 18px; color: var(--gt-arc); min-width: 26px; }
+.gt-slide-tekst { display: flex; flex-direction: column; min-width: 0; font-size: 14px; }
+.gt-slide-tekst span { color: var(--gt-zacht); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gt-plus { justify-content: center; color: var(--gt-arc); font-weight: 600; font-size: 14px; border-style: dashed; }
+.gt-uitleg { margin: -4px 0 12px; }
+.gt-slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; max-width: 520px; }
+.gt-slide-nav .gt-knop { padding: 8px 12px; font-size: 13px; }
+.gt-slide-nav .gt-knop:disabled { opacity: 0.3; cursor: default; }
+.gt-slide-positie { font-size: 14px; font-weight: 600; text-align: center; }
 
 .gt-uitvoer-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 .gt-uitvoer { border: 1px solid var(--gt-lijn); padding: 16px; min-width: 0; }

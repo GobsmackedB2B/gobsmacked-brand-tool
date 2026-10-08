@@ -145,19 +145,41 @@ function carouselEditor(id) {
   };
 
   const layoutSlot = spec.slots.find((s) => s.id === carousel.layoutSlot);
+  const layoutLabel = (layout) => layoutSlot?.options.find((o) => o.id === layout)?.label ?? layout;
+  const canEditSlides = carousel.minSlides !== carousel.maxSlides;
+  // Eerste tekstveld van een slide, als herkenning in de lijst.
+  const snippet = (slide) => {
+    const first = slotsFor(spec, slide.layout).find((s) => s.type === "text" && !sharedIds.has(s.id) && s.id !== carousel.counterSlot && slide[s.id]);
+    const text = first ? String(slide[first.id]) : "";
+    return text.length > 34 ? text.slice(0, 33) + "…" : text;
+  };
+
+  const select = (i) => { current = i; renderTabs(); renderSlideForm(); refresh(); };
+  const position = h("span", { class: "gt-slide-positie" });
+  const prevBtn = button("← Vorige", () => current > 0 && select(current - 1));
+  const nextBtn = button("Volgende →", () => current < slides.length - 1 && select(current + 1));
+  const navBar = h("div", { class: "gt-slide-nav" }, prevBtn, position, nextBtn);
+
   const renderSlideForm = () => {
     const slide = slides[current];
     const own = slotsFor(spec, slide.layout).filter(
       (s) => !sharedIds.has(s.id) && s.id !== carousel.counterSlot && s.id !== carousel.layoutSlot
     );
-    const canChooseLayout = carousel.minSlides !== carousel.maxSlides;
     slideForm.replaceChildren(
-      h("h3", { class: "gt-kop3" }, `Slide ${current + 1}`),
-      canChooseLayout
-        ? field("Layout", choices(layoutSlot.options, slide.layout, (v) => { slides[current] = { ...slideFor({ layout: v }), ...pick(slide, v) }; renderSlideForm(); refresh(); }).el)
+      h("h3", { class: "gt-kop3" }, `Stap 2 · Tekst en foto van slide ${current + 1}`),
+      canEditSlides
+        ? field("Layout van deze slide", choices(layoutSlot.options, slide.layout, (v) => { slides[current] = { ...slideFor({ layout: v }), ...pick(slide, v) }; renderTabs(); renderSlideForm(); refresh(); }).el)
         : null,
-      slotFields(own, slide, (k, v) => { slide[k] = v; refresh(); })
+      ...(own.length
+        ? slotFields(own, slide, (k, v) => { slide[k] = v; renderTabs(); refresh(); })
+        : [h("p", { class: "gt-hint" }, "Deze slide heeft geen eigen tekst of foto.")]),
+      canEditSlides
+        ? h("div", { class: "gt-rij" }, moveBtn(-1, "← Eerder"), moveBtn(1, "Later →"), removeBtn)
+        : null
     );
+    position.textContent = `Slide ${current + 1} van ${slides.length} · ${layoutLabel(slide.layout)}`;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
   };
   // Behoud wat al ingevuld was als de layout wisselt (alleen velden die de nieuwe layout kent).
   const pick = (slide, layout) => {
@@ -168,26 +190,29 @@ function carouselEditor(id) {
   const renderTabs = () => {
     tabs.replaceChildren(
       ...slides.map((s, i) =>
-        h("button", { type: "button", role: "tab", class: "gt-slide-tab", "aria-selected": String(i === current), onClick: () => { current = i; renderTabs(); renderSlideForm(); refresh(); } }, String(i + 1).padStart(2, "0"))
+        h(
+          "button",
+          { type: "button", role: "tab", class: "gt-slide-item", "aria-selected": String(i === current), onClick: () => select(i) },
+          h("span", { class: "gt-slide-nr" }, String(i + 1).padStart(2, "0")),
+          h("span", { class: "gt-slide-tekst" }, h("strong", {}, layoutLabel(s.layout)), snippet(s) ? h("span", {}, snippet(s)) : null)
+        )
       ),
-      slides.length < carousel.maxSlides
-        ? h("button", { type: "button", class: "gt-slide-tab gt-plus", "aria-label": "Slide toevoegen", onClick: () => { slides.splice(slides.length - 1, 0, slideFor(carousel.newSlide ?? { layout: slides[0].layout })); current = slides.length - 2; renderTabs(); renderSlideForm(); refresh(); } }, "+")
+      canEditSlides && slides.length < carousel.maxSlides
+        ? h("button", { type: "button", class: "gt-slide-item gt-plus", onClick: () => { slides.splice(slides.length - 1, 0, slideFor(carousel.newSlide ?? { layout: slides[0].layout })); select(slides.length - 2); } }, "+ Slide toevoegen")
         : null
     );
   };
 
-  const removeBtn = button("Slide verwijderen", () => {
+  const removeBtn = button("Verwijderen", () => {
     if (slides.length <= carousel.minSlides) return;
     slides.splice(current, 1);
-    current = Math.max(0, current - 1);
-    renderTabs(); renderSlideForm(); refresh();
+    select(Math.max(0, current - 1));
   });
   const moveBtn = (dir, label) => button(label, () => {
     const to = current + dir;
     if (to < 0 || to >= slides.length) return;
     [slides[current], slides[to]] = [slides[to], slides[current]];
-    current = to;
-    renderTabs(); renderSlideForm(); refresh();
+    select(to);
   });
 
   const name = `gobsmacked-${id.replace(/^gob-/, "")}-${today()}`;
@@ -232,15 +257,17 @@ function carouselEditor(id) {
     "div",
     { class: "gt-tab" },
     h("div", { class: "gt-kolom gt-instellingen" },
-      h("h3", { class: "gt-kop3" }, `${spec.name}: voor alle slides`),
+      h("h3", { class: "gt-kop3" }, "Stap 1 · Kies een slide"),
+      h("p", { class: "gt-hint gt-uitleg" }, "Klik op een slide om de tekst en foto ervan aan te passen."),
+      tabs,
+      h("hr", { class: "gt-lijn" }),
+      slideForm,
+      h("hr", { class: "gt-lijn" }),
+      h("h3", { class: "gt-kop3" }, "Stap 3 · Voor alle slides"),
       slotFields(sharedSlots, shared, (k, v) => { shared[k] = v; refresh(); }),
       h("div", { class: "gt-rij" }, button("Nieuwe gradientvorm", () => { seed = newSeed(); refresh(); })),
-      h("hr", { class: "gt-lijn" }),
-      tabs,
-      carousel.minSlides !== carousel.maxSlides ? h("div", { class: "gt-rij" }, moveBtn(-1, "← Naar voren"), moveBtn(1, "Naar achteren →"), removeBtn) : null,
-      slideForm,
       actions
     ),
-    h("div", { class: "gt-kolom gt-voorbeeld" }, view.el, warnings)
+    h("div", { class: "gt-kolom gt-voorbeeld" }, navBar, view.el, warnings)
   );
 }
