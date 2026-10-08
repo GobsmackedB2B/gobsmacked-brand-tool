@@ -96,6 +96,7 @@ export function onboardingTab() {
     type: "png",
     options: [
       field("Kleur van de ring", ringSelect),
+      ySlider(state.monday, "photo__ty", 19, () => monday.output.refresh()),
     ],
   });
   ringSelect.addEventListener("change", () => { state.monday.ring = ringSelect.value; monday.output.refresh(); });
