@@ -1,0 +1,75 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .kop {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    text-transform: uppercase;
+    white-space: pre-line;
+  }
+  /* The highlighted line: letters outlined only, no fill (Gobsmacked typographic accent). */
+  .outline {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 3px var(--color-op-achtergrond);
+  }
+  .label {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-merk);
+  }
+  /* Locked: the blobs (see brand rules). A pair on opposite edges; both centres lie outside the
+     frame and fade to transparent, the middle stays dark. The variant slot picks the positions. */
+  .frame[data-blob="hoeken"] { --blob-p: 75% 48% at -12% 88%; --blob-a: 62% 40% at 112% 6%; }
+  .frame[data-blob="gespiegeld"] { --blob-p: 75% 48% at 112% 88%; --blob-a: 62% 40% at -12% 6%; }
+  .frame[data-blob="boven-onder"] { --blob-p: 115% 46% at 50% 116%; --blob-a: 100% 38% at 50% -12%; }
+  .frame[data-blob="zijkanten"] { --blob-p: 62% 55% at -20% 55%; --blob-a: 55% 48% at 120% 42%; }
+  .frame[data-blob="ingetogen"] { --blob-p: 52% 32% at -14% 98%; --blob-a: 42% 26% at 114% -2%; }
+  .blobs {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(var(--blob-p), color-mix(in srgb, var(--color-gloed-links) 92%, transparent) 0%, transparent 70%),
+      radial-gradient(var(--blob-a), color-mix(in srgb, var(--color-gloed-rechts) 58%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo { position: absolute; top: 120px; left: 50%; transform: translateX(-50%); width: 260px; }
+  .content {
+    position: absolute;
+    left: 75px;
+    right: 75px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 56px;
+  }
+  .kop { width: 100%; font-size: 96px; line-height: 1.02; letter-spacing: -0.01em; overflow: hidden; }
+  /* One line per field: never wrap, so the three-line rhythm stays intact. */
+  .kop > span { display: block; white-space: nowrap; overflow: hidden; }
+  .body { margin: 0; max-width: 760px; font-size: 32px; line-height: 1.4; max-height: 135px; overflow: hidden; }
+</style>
+<div class="frame" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken">
+  <div class="blobs"></div>
+  <img class="logo" data-slot="logo" alt="" />
+  <div class="content">
+    <h1 class="kop"><span data-slot="line1" data-fit-width></span><span class="outline" data-slot="line2" data-fit-width></span><span data-slot="line3" data-fit-width></span></h1>
+    <p class="body" data-slot="body" data-fit></p>
+  </div>
+</div>

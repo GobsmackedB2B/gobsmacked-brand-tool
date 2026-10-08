@@ -1,0 +1,33 @@
+<style>
+  /* Transparent frame: only the circle is painted (spec.transparent renders with alpha). */
+  .frame { position: relative; width: 836px; height: 828px; overflow: hidden; }
+  .frame[data-ring="oranje"] { --ring: #EF7A00; }
+  .frame[data-ring="wit"] { --ring: #FFFFFF; }
+  .frame[data-ring="rood"] { --ring: #DB0000; }
+  .frame[data-ring="geel"] { --ring: #FEFB3B; }
+  .frame[data-ring="groen"] { --ring: #509700; }
+  .frame[data-ring="lichtgroen"] { --ring: #B4F7C1; }
+  .frame[data-ring="lichtblauw"] { --ring: #6BBEE7; }
+  .frame[data-ring="paars"] { --ring: #CE00FA; }
+  .frame[data-ring="arctic"] { --ring: #21FDE5; }
+  .frame[data-ring="purple"] { --ring: #780B4B; }
+  .frame[data-ring="midnight"] { --ring: #090715; }
+  .ring {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    width: 812px;
+    height: 812px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 55px solid var(--ring);
+    overflow: hidden;
+    background: #fff;
+  }
+  .photo { width: 100%; height: 100%; object-fit: cover; }
+  .ring[data-focus="gezicht"] .photo { transform: scale(2.35); transform-origin: 50% 19%; }
+  .ring[data-focus="schouders"] .photo { transform: scale(1.6); transform-origin: 50% 17%; }
+</style>
+<div class="frame" data-slot="ring" data-slot-attr="data-ring" data-ring="oranje">
+  <div class="ring" data-slot="focus" data-slot-attr="data-focus" data-focus="gezicht"><img class="photo" data-slot="photo" alt="" /></div>
+</div>

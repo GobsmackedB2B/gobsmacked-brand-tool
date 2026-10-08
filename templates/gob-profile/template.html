@@ -1,0 +1,19 @@
+<style>
+  .frame {
+    position: relative;
+    width: 800px;
+    height: 800px;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 60% at 0% 0%, color-mix(in srgb, var(--color-gloed-rechts) 70%, transparent) 0%, transparent 70%),
+      radial-gradient(60% 60% at 100% 100%, color-mix(in srgb, var(--color-gloed-links) 95%, transparent) 0%, transparent 70%),
+      var(--color-achtergrond);
+  }
+  .clip { position: absolute; left: 45px; top: 45px; width: 710px; height: 710px; overflow: hidden; }
+  .photo { width: 100%; height: 100%; object-fit: cover; }
+  .frame[data-focus="gezicht"] .photo { transform: scale(2.1); transform-origin: 50% 19%; }
+  .frame[data-focus="schouders"] .photo { transform: scale(1.5); transform-origin: 50% 16%; }
+</style>
+<div class="frame" data-slot="focus" data-slot-attr="data-focus" data-focus="schouders">
+  <div class="clip"><img class="photo" data-slot="photo" alt="" /></div>
+</div>

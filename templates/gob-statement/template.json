@@ -1,0 +1,106 @@
+{
+  "id": "gob-statement",
+  "name": "Statement",
+  "type": "social-post",
+  "width": 1080,
+  "height": 1350,
+  "source": {
+    "figmaFile": "BnE18WvS88DXplJR1VfWoB",
+    "node": "248:16",
+    "note": "Reeks Gobsmacked_Blog (Stop met schuiven / Durf te kiezen)"
+  },
+  "locked": [
+    "Gradient (kies uit vaste varianten)",
+    "Logo bovenaan in het midden",
+    "Kop in hoofdletters, middelste regel als outline"
+  ],
+  "tokens": {
+    "colors": [
+      "achtergrond",
+      "op-achtergrond",
+      "merk",
+      "gloed-links",
+      "gloed-rechts"
+    ],
+    "fonts": [
+      "kop",
+      "tekst"
+    ],
+    "swatch": [
+      "achtergrond"
+    ]
+  },
+  "slots": [
+    {
+      "id": "blob",
+      "type": "variant",
+      "label": "Gradient",
+      "default": "hoeken",
+      "options": [
+        {
+          "id": "hoeken",
+          "label": "Hoeken",
+          "preview": "radial-gradient(75% 48% at -12% 88%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(62% 40% at 112% 6%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "gespiegeld",
+          "label": "Gespiegeld",
+          "preview": "radial-gradient(75% 48% at 112% 88%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(62% 40% at -12% 6%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "boven-onder",
+          "label": "Boven en onder",
+          "preview": "radial-gradient(115% 46% at 50% 116%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(100% 38% at 50% -12%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "zijkanten",
+          "label": "Zijkanten",
+          "preview": "radial-gradient(62% 55% at -20% 55%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(55% 48% at 120% 42%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "ingetogen",
+          "label": "Ingetogen",
+          "preview": "radial-gradient(52% 32% at -14% 98%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(42% 26% at 114% -2%, #21FDE594 0%, #21FDE500 70%), #090715"
+        }
+      ]
+    },
+    {
+      "id": "line1",
+      "type": "text",
+      "label": "Kop, regel 1",
+      "maxChars": 16,
+      "default": "Stop met"
+    },
+    {
+      "id": "line2",
+      "type": "text",
+      "label": "Kop, regel 2 (outline)",
+      "maxChars": 16,
+      "default": "schuiven."
+    },
+    {
+      "id": "line3",
+      "type": "text",
+      "label": "Kop, regel 3",
+      "maxChars": 16,
+      "default": "Durf te kiezen."
+    },
+    {
+      "id": "body",
+      "type": "text",
+      "label": "Toelichting",
+      "maxChars": 110,
+      "default": "Wie iedereen wil aanspreken, valt bij niemand op. Kies je doelgroep en ga er vol voor."
+    },
+    {
+      "id": "logo",
+      "type": "brand-logo",
+      "label": "Logo",
+      "onRole": "achtergrond",
+      "logo": "full"
+    }
+  ],
+  "brands": [
+    "gobsmacked"
+  ]
+}

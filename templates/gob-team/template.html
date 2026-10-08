@@ -1,0 +1,72 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .kop {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    text-transform: uppercase;
+    white-space: pre-line;
+  }
+  /* The highlighted line: letters outlined only, no fill (Gobsmacked typographic accent). */
+  .outline {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 3px var(--color-op-achtergrond);
+  }
+  .label {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-merk);
+  }
+  .photo { position: absolute; inset: 0; width: 1080px; height: 1350px; object-fit: cover; object-position: center top; }
+  .fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-achtergrond) 60%, transparent) 0%, transparent 18%),
+      linear-gradient(180deg, transparent 52%, var(--color-achtergrond) 86%);
+  }
+  /* Locked: the blobs (see brand rules). A pair on opposite edges; both centres lie outside the
+     frame and fade to transparent, the middle stays dark. The variant slot picks the positions. */
+  .frame[data-blob="hoeken"] { --blob-p: 75% 48% at -12% 88%; --blob-a: 62% 40% at 112% 6%; }
+  .frame[data-blob="gespiegeld"] { --blob-p: 75% 48% at 112% 88%; --blob-a: 62% 40% at -12% 6%; }
+  .frame[data-blob="boven-onder"] { --blob-p: 115% 46% at 50% 116%; --blob-a: 100% 38% at 50% -12%; }
+  .frame[data-blob="zijkanten"] { --blob-p: 62% 55% at -20% 55%; --blob-a: 55% 48% at 120% 42%; }
+  .frame[data-blob="ingetogen"] { --blob-p: 52% 32% at -14% 98%; --blob-a: 42% 26% at 114% -2%; }
+  .blobs {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(var(--blob-p), color-mix(in srgb, var(--color-gloed-links) 92%, transparent) 0%, transparent 70%),
+      radial-gradient(var(--blob-a), color-mix(in srgb, var(--color-gloed-rechts) 58%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 260px; }
+  .text { position: absolute; left: 75px; right: 75px; bottom: 100px; text-align: center; }
+  .name { margin-top: 18px; font-size: 128px; line-height: 1.05; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; }
+  .role { margin: 22px 0 0; font-size: 34px; line-height: 1.3; }
+</style>
+<div class="frame" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken">
+  <img class="photo" data-slot="photo" alt="" />
+  <div class="fade"></div>
+  <div class="blobs"></div>
+  <img class="logo" data-slot="logo" alt="" />
+  <div class="text">
+    <p class="label" data-slot="label" data-fit-frame></p>
+    <h1 class="kop name" data-slot="name" data-fit-width></h1>
+    <p class="role" data-slot="role" data-fit-frame></p>
+  </div>
+</div>

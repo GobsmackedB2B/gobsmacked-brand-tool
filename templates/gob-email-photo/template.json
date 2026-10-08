@@ -1,0 +1,34 @@
+{
+  "id": "gob-email-photo",
+  "name": "E-mailfoto (onderdeel van de e-mailhandtekening)",
+  "type": "onboarding",
+  "width": 250,
+  "height": 250,
+  "source": {
+    "note": "Dropbox Team foto's/Email Handtekening (250 × 250, rand 14 px met gloed)"
+  },
+  "locked": [
+    "Midnight-rand van 14 px",
+    "Arctic Blue-gloed linksboven, Purple rechtsonder"
+  ],
+  "tokens": {
+    "colors": [
+      "achtergrond",
+      "gloed-links",
+      "gloed-rechts"
+    ],
+    "fonts": []
+  },
+  "slots": [
+    {
+      "id": "photo",
+      "type": "image",
+      "label": "Teamfoto (staand, uit de map Export)",
+      "default": "sample-photo.jpg"
+    }
+  ],
+  "brands": [
+    "gobsmacked"
+  ],
+  "hidden": true
+}

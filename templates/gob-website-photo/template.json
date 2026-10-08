@@ -1,0 +1,22 @@
+{
+  "id": "gob-website-photo",
+  "name": "Websitefoto",
+  "type": "onboarding",
+  "width": 687,
+  "height": 916,
+  "source": { "note": "Teamfoto's op gobsmacked.agency/over-ons zijn 687 x 916 (3:4), JPG" },
+  "tokens": { "colors": ["achtergrond"] },
+  "slots": [
+    { "id": "photo", "type": "image", "label": "Foto" },
+    {
+      "id": "focus",
+      "type": "variant",
+      "label": "Uitsnede",
+      "default": "heel",
+      "options": [
+        { "id": "heel", "label": "Zoals de foto" },
+        { "id": "dichterbij", "label": "Dichterbij" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "id": "gob-monday",
+  "name": "Monday-profielfoto",
+  "type": "onboarding",
+  "width": 836,
+  "height": 828,
+  "transparent": true,
+  "source": {
+    "note": "Dropbox Team foto's/Monday (monday-template.psd): cirkel 812 px, ring 55 px, transparant"
+  },
+  "locked": [
+    "Ronde uitsnede met ring van 55 px",
+    "Transparante achtergrond"
+  ],
+  "tokens": {
+    "colors": [
+      "achtergrond"
+    ],
+    "fonts": []
+  },
+  "slots": [
+    {
+      "id": "photo",
+      "type": "image",
+      "label": "Teamfoto (staand, uit de map Export)",
+      "default": "sample-photo.jpg"
+    },
+    {
+      "id": "ring",
+      "type": "variant",
+      "label": "Kleur van de ring (je eigen Monday-kleur)",
+      "default": "oranje",
+      "options": [
+        {
+          "id": "oranje",
+          "label": "Oranje",
+          "preview": "radial-gradient(circle, transparent 0 46%, #EF7A00 47%), #d9d9d9"
+        },
+        {
+          "id": "wit",
+          "label": "Wit",
+          "preview": "radial-gradient(circle, transparent 0 46%, #FFFFFF 47%), #bbbbbb"
+        },
+        {
+          "id": "rood",
+          "label": "Rood",
+          "preview": "radial-gradient(circle, transparent 0 46%, #DB0000 47%), #d9d9d9"
+        },
+        {
+          "id": "geel",
+          "label": "Geel",
+          "preview": "radial-gradient(circle, transparent 0 46%, #FEFB3B 47%), #d9d9d9"
+        },
+        {
+          "id": "groen",
+          "label": "Groen",
+          "preview": "radial-gradient(circle, transparent 0 46%, #509700 47%), #d9d9d9"
+        },
+        {
+          "id": "lichtgroen",
+          "label": "Lichtgroen",
+          "preview": "radial-gradient(circle, transparent 0 46%, #B4F7C1 47%), #d9d9d9"
+        },
+        {
+          "id": "lichtblauw",
+          "label": "Lichtblauw",
+          "preview": "radial-gradient(circle, transparent 0 46%, #6BBEE7 47%), #d9d9d9"
+        },
+        {
+          "id": "paars",
+          "label": "Paars",
+          "preview": "radial-gradient(circle, transparent 0 46%, #CE00FA 47%), #d9d9d9"
+        },
+        {
+          "id": "arctic",
+          "label": "Arctic Blue",
+          "preview": "radial-gradient(circle, transparent 0 46%, #21FDE5 47%), #d9d9d9"
+        },
+        {
+          "id": "purple",
+          "label": "Purple",
+          "preview": "radial-gradient(circle, transparent 0 46%, #780B4B 47%), #d9d9d9"
+        },
+        {
+          "id": "midnight",
+          "label": "Midnight Blue",
+          "preview": "radial-gradient(circle, transparent 0 46%, #090715 47%), #d9d9d9"
+        }
+      ]
+    },
+    {
+      "id": "focus",
+      "type": "variant",
+      "label": "Uitsnede",
+      "default": "gezicht",
+      "options": [
+        {
+          "id": "gezicht",
+          "label": "Gezicht",
+          "preview": "radial-gradient(circle at 50% 38%, #8A8F99 0 28%, #D9D9D9 29%)"
+        },
+        {
+          "id": "schouders",
+          "label": "Met schouders",
+          "preview": "radial-gradient(circle at 50% 45%, #8A8F99 0 22%, #D9D9D9 23%)"
+        }
+      ]
+    }
+  ],
+  "brands": [
+    "gobsmacked"
+  ]
+}

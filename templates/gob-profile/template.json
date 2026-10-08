@@ -1,0 +1,22 @@
+{
+  "id": "gob-profile",
+  "name": "Profielfoto LinkedIn en Teams",
+  "type": "onboarding",
+  "width": 800,
+  "height": 800,
+  "source": { "note": "Zelfde opbouw als gob-email-photo (Midnight-rand met gloed), vierkant voor LinkedIn en Teams" },
+  "tokens": { "colors": ["achtergrond", "gloed-links", "gloed-rechts"] },
+  "slots": [
+    { "id": "photo", "type": "image", "label": "Foto" },
+    {
+      "id": "focus",
+      "type": "variant",
+      "label": "Uitsnede",
+      "default": "schouders",
+      "options": [
+        { "id": "gezicht", "label": "Gezicht" },
+        { "id": "schouders", "label": "Schouders" }
+      ]
+    }
+  ]
+}

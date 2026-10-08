@@ -1,0 +1,18 @@
+<style>
+  .frame {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 60% at 0% 0%, color-mix(in srgb, var(--color-gloed-rechts) 70%, transparent) 0%, transparent 70%),
+      radial-gradient(60% 60% at 100% 100%, color-mix(in srgb, var(--color-gloed-links) 95%, transparent) 0%, transparent 70%),
+      var(--color-achtergrond);
+  }
+  .photo { position: absolute; left: 14px; top: 14px; width: 222px; height: 222px; object-fit: cover; transform: scale(1.5); transform-origin: 50% 16%; }
+  .clip { position: absolute; left: 14px; top: 14px; width: 222px; height: 222px; overflow: hidden; }
+  .clip .photo { left: 0; top: 0; }
+</style>
+<div class="frame">
+  <div class="clip"><img class="photo" data-slot="photo" alt="" /></div>
+</div>

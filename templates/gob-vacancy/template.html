@@ -1,0 +1,150 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .frame p, .frame h1 { margin: 0; }
+  .caps { text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .photo { position: absolute; inset: 0; width: 1080px; height: 1350px; object-fit: cover; object-position: center top; }
+  /* Figma Rectangle 20: the photo dissolves into Midnight Blue under the title. */
+  .fade { position: absolute; inset: 0; }
+  .frame[data-layout="voorkant"] .fade {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-achtergrond) 55%, transparent) 0%, transparent 18%),
+      linear-gradient(180deg, transparent 30%, var(--color-achtergrond) 62%);
+  }
+  .frame[data-layout="vacaturetekst"] .fade {
+    background: linear-gradient(180deg, transparent 40%, var(--color-achtergrond) 100%);
+  }
+
+  /* Locked: the blobs (see brand rules). A pair on opposite edges; both centres lie outside the
+     frame and fade to transparent, the middle stays dark. The variant slot picks the positions. */
+  .blobs[data-blob="hoeken"] { --blob-p: 75% 48% at -12% 88%; --blob-a: 62% 40% at 112% 6%; }
+  .blobs[data-blob="gespiegeld"] { --blob-p: 75% 48% at 112% 88%; --blob-a: 62% 40% at -12% 6%; }
+  .blobs[data-blob="boven-onder"] { --blob-p: 115% 46% at 50% 116%; --blob-a: 100% 38% at 50% -12%; }
+  .blobs[data-blob="zijkanten"] { --blob-p: 62% 55% at -20% 55%; --blob-a: 55% 48% at 120% 42%; }
+  .blobs[data-blob="ingetogen"] { --blob-p: 52% 32% at -14% 98%; --blob-a: 42% 26% at 114% -2%; }
+  .blobs {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(var(--blob-p), color-mix(in srgb, var(--color-gloed-links) 92%, transparent) 0%, transparent 70%),
+      radial-gradient(var(--blob-a), color-mix(in srgb, var(--color-gloed-rechts) 58%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+
+  .badge {
+    position: absolute;
+    left: 75px;
+    top: 75px;
+    height: 46px;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--color-op-achtergrond);
+    border-radius: 999px;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 22px;
+    white-space: nowrap;
+  }
+  .logo { position: absolute; right: 75px; top: 88px; width: 188px; }
+  .footer {
+    position: absolute;
+    left: 75px;
+    right: 75px;
+    bottom: 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+  }
+  .swipe { display: none; width: 53px; height: 32px; }
+  .frame[data-layout="voorkant"] .swipe { display: block; }
+  .frame[data-layout="voorkant"] .agency { display: none; }
+  .counter { display: none; }
+
+  /* ---- Voorkant (Figma 93:89 / 93:90) ---- */
+  .front { position: absolute; left: 75px; right: 75px; bottom: 150px; display: none; }
+  .frame[data-layout="voorkant"] .front { display: block; }
+  .kicker { font-family: var(--font-kop); font-weight: 600; font-size: 34px; line-height: 1.2; color: var(--color-merk); }
+  .title {
+    margin-top: 22px;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    font-size: 108px;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .title > span { display: block; white-space: nowrap; overflow: hidden; }
+  .outline { color: transparent; -webkit-text-stroke: 3px var(--color-op-achtergrond); }
+
+  /* ---- Vacaturetekst: white panel with square corners (Figma Rectangle 21), text never on an accent colour ---- */
+  .panel {
+    position: absolute;
+    left: 75px; /* aligned with the CAREERS pill (left) and the logo (right) */
+    right: 75px;
+    top: 240px;
+    max-height: 960px; /* stays clear of the footer */
+    box-sizing: border-box;
+    padding: 56px 56px;
+    border-radius: 0;
+    background: #FFFFFF; /* pure white: Gobsmacked uses no off-white */
+    color: #090715;
+    display: none;
+    overflow: hidden;
+    font-size: 28px;
+    line-height: 1.45;
+  }
+  .frame[data-layout="vacaturetekst"] .panel { display: block; }
+  .panel h2 { margin: 36px 0 14px; font-family: var(--font-kop); font-weight: var(--font-kop-weight); font-size: 34px; line-height: 1.2; }
+  .panel ul { margin: 0; padding: 0; list-style: none; }
+  .panel li { margin-top: 10px; }
+  .panel li b { font-family: var(--font-kop); font-weight: var(--font-kop-weight); }
+  .panel .meta { margin-top: 32px; }
+  .panel .cta { margin-top: 24px; font-family: var(--font-kop); font-weight: var(--font-kop-weight); font-size: 32px; }
+  .panel .contact { margin-top: 6px; }
+</style>
+<div class="frame" data-slot="layout" data-slot-attr="data-layout" data-layout="voorkant">
+  <img class="photo" data-slot="photo" alt="" />
+  <div class="fade"></div>
+  <div class="blobs" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken"></div>
+  <p class="badge caps" data-slot="badge" data-fit-frame></p>
+  <img class="logo" data-slot="logo" alt="" />
+  <span class="counter" data-slot="counter"></span>
+
+  <div class="front">
+    <p class="kicker caps" data-slot="kicker" data-fit-frame></p>
+    <h1 class="title"><span data-slot="title1" data-fit-width></span><span class="outline" data-slot="title2" data-fit-width></span></h1>
+  </div>
+
+  <div class="panel" data-fit>
+    <p data-slot="intro"></p>
+    <h2>Jouw focus</h2>
+    <ul>
+      <li><b>Maken:</b> <span data-slot="make"></span></li>
+      <li><b>Leren:</b> <span data-slot="learn"></span></li>
+      <li><b>Samenwerken:</b> <span data-slot="together"></span></li>
+    </ul>
+    <p class="meta"><b>Locatie:</b> <span data-slot="location"></span></p>
+    <p class="cta" data-slot="cta"></p>
+    <p class="contact" data-slot="contact"></p>
+  </div>
+
+  <div class="footer caps">
+    <span data-slot="footer"></span>
+    <span class="agency">Gobsmacked B2B marketing agency</span>
+    <svg class="swipe" viewBox="0 0 53 32" fill="none" aria-hidden="true"><path d="M2 16h46M36 4l12 12-12 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</div>

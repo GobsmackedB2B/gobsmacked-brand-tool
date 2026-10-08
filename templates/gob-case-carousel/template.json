@@ -1,0 +1,239 @@
+{
+  "id": "gob-case-carousel",
+  "name": "Case-carrousel",
+  "type": "social-post",
+  "width": 1080,
+  "height": 1350,
+  "source": {
+    "figmaFile": "BnE18WvS88DXplJR1VfWoB",
+    "node": "644:247",
+    "note": "Sectie Nooteboom Euro PX3 2.4 (7 slides); zelfde opbouw als N+P Industrial Hiring (644:246)"
+  },
+  "locked": [
+    "Gradient (kies uit vaste varianten)",
+    "Label linksboven, teller rechtsboven",
+    "Vier vaste layouts",
+    "Logo op cover en afsluiter"
+  ],
+  "tokens": {
+    "colors": [
+      "achtergrond",
+      "op-achtergrond",
+      "merk",
+      "gloed-links",
+      "gloed-rechts"
+    ],
+    "fonts": [
+      "kop",
+      "tekst"
+    ],
+    "swatch": [
+      "achtergrond"
+    ]
+  },
+  "carousel": {
+    "layoutSlot": "layout",
+    "counterSlot": "counter",
+    "shared": [
+      "blob",
+      "label",
+      "product",
+      "client"
+    ],
+    "minSlides": 3,
+    "maxSlides": 10,
+    "newSlide": {
+      "layout": "foto-boven",
+      "title": "Nieuwe stap",
+      "body": "Vertel in twee of drie zinnen wat er gebeurde en waarom het werkte."
+    },
+    "slides": [
+      {
+        "layout": "cover",
+        "title": "Staal dat stroomt",
+        "body": "Eén draaidag en een lancering die al liep vóór de onthulling."
+      },
+      {
+        "layout": "foto-boven",
+        "title": "De nieuwe EuroPX3",
+        "body": "Nooteboom breidde de EuroPX3 uit met een interdolly: meer laadvermogen, maximale inzetbaarheid in speciaal transport."
+      },
+      {
+        "layout": "foto-onder",
+        "title": "Liquid steel",
+        "body": "Specs vertellen dit verhaal niet. Dus vertaalden we de lancering naar één beeld: gesmolten staal dat door het zand stroomt."
+      },
+      {
+        "layout": "foto-boven",
+        "title": "Lanceren begint vóór de onthulling",
+        "body": "Een productlancering is geen moment, het is een opbouw. De teaser stond online vóórdat de trailer op Hillhead werd getoond."
+      },
+      {
+        "layout": "afsluiter"
+      }
+    ]
+  },
+  "slots": [
+    {
+      "id": "blob",
+      "type": "variant",
+      "label": "Gradient (voor alle slides)",
+      "default": "hoeken",
+      "options": [
+        {
+          "id": "hoeken",
+          "label": "Hoeken",
+          "preview": "radial-gradient(75% 48% at -12% 88%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(62% 40% at 112% 6%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "gespiegeld",
+          "label": "Gespiegeld",
+          "preview": "radial-gradient(75% 48% at 112% 88%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(62% 40% at -12% 6%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "boven-onder",
+          "label": "Boven en onder",
+          "preview": "radial-gradient(115% 46% at 50% 116%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(100% 38% at 50% -12%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "zijkanten",
+          "label": "Zijkanten",
+          "preview": "radial-gradient(62% 55% at -20% 55%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(55% 48% at 120% 42%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "ingetogen",
+          "label": "Ingetogen",
+          "preview": "radial-gradient(52% 32% at -14% 98%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(42% 26% at 114% -2%, #21FDE594 0%, #21FDE500 70%), #090715"
+        }
+      ]
+    },
+    {
+      "id": "label",
+      "type": "text",
+      "label": "Label (voor alle slides)",
+      "maxChars": 30,
+      "default": "Case · Product launch"
+    },
+    {
+      "id": "product",
+      "type": "text",
+      "label": "Product of project (voor alle slides)",
+      "maxChars": 24,
+      "default": "Euro PX3 2.4"
+    },
+    {
+      "id": "client",
+      "type": "text",
+      "label": "Klant (voor alle slides)",
+      "maxChars": 28,
+      "default": "Nooteboom Trailers"
+    },
+    {
+      "id": "layout",
+      "type": "variant",
+      "label": "Layout",
+      "default": "cover",
+      "options": [
+        {
+          "id": "cover",
+          "label": "Cover",
+          "preview": "linear-gradient(#090715 0 0) 0 70% / 100% 22% no-repeat, linear-gradient(#8A8F99 0 0)"
+        },
+        {
+          "id": "foto-boven",
+          "label": "Foto boven",
+          "preview": "linear-gradient(#8A8F99 0 0) 0 0 / 100% 66% no-repeat, #090715"
+        },
+        {
+          "id": "foto-onder",
+          "label": "Foto onder",
+          "preview": "linear-gradient(#8A8F99 0 0) 0 100% / 100% 64% no-repeat, #090715"
+        },
+        {
+          "id": "afsluiter",
+          "label": "Afsluiter",
+          "preview": "linear-gradient(#090715cc 0 0), linear-gradient(#8A8F99 0 0)"
+        }
+      ]
+    },
+    {
+      "id": "counter",
+      "type": "text",
+      "label": "Teller",
+      "default": "01 / 05"
+    },
+    {
+      "id": "photo",
+      "type": "image",
+      "label": "Foto",
+      "default": "sample-photo.jpg",
+      "layouts": [
+        "cover",
+        "foto-boven",
+        "foto-onder",
+        "afsluiter"
+      ]
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "label": "Kop",
+      "maxChars": 36,
+      "default": "Staal dat stroomt",
+      "layouts": [
+        "cover",
+        "foto-boven",
+        "foto-onder"
+      ]
+    },
+    {
+      "id": "body",
+      "type": "text",
+      "label": "Tekst",
+      "maxChars": 260,
+      "default": "Eén draaidag en een lancering die al liep vóór de onthulling.",
+      "layouts": [
+        "cover",
+        "foto-boven",
+        "foto-onder"
+      ]
+    },
+    {
+      "id": "intro",
+      "type": "text",
+      "label": "Aankondiging",
+      "maxChars": 36,
+      "default": "[ Tot zover deze case ]",
+      "layouts": [
+        "afsluiter"
+      ]
+    },
+    {
+      "id": "question",
+      "type": "text",
+      "label": "Vraag",
+      "maxChars": 70,
+      "default": "Benieuwd wat Gobsmacked voor jou kan betekenen?",
+      "layouts": [
+        "afsluiter"
+      ]
+    },
+    {
+      "id": "url",
+      "type": "text",
+      "label": "Website",
+      "maxChars": 36,
+      "default": "www.gobsmacked.agency",
+      "layouts": [
+        "afsluiter"
+      ]
+    },
+    {
+      "id": "logo",
+      "type": "brand-logo",
+      "label": "Logo",
+      "onRole": "achtergrond",
+      "logo": "full"
+    }
+  ]
+}

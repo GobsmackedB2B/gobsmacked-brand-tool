@@ -1,0 +1,82 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .kop {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    text-transform: uppercase;
+    white-space: pre-line;
+  }
+  /* The highlighted line: letters outlined only, no fill (Gobsmacked typographic accent). */
+  .outline {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 3px var(--color-op-achtergrond);
+  }
+  .label {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-merk);
+  }
+  /* Locked: the blobs (see brand rules). A pair on opposite edges; both centres lie outside the
+     frame and fade to transparent, the middle stays dark. The variant slot picks the positions. */
+  .frame[data-blob="hoeken"] { --blob-p: 75% 48% at -12% 88%; --blob-a: 62% 40% at 112% 6%; }
+  .frame[data-blob="gespiegeld"] { --blob-p: 75% 48% at 112% 88%; --blob-a: 62% 40% at -12% 6%; }
+  .frame[data-blob="boven-onder"] { --blob-p: 115% 46% at 50% 116%; --blob-a: 100% 38% at 50% -12%; }
+  .frame[data-blob="zijkanten"] { --blob-p: 62% 55% at -20% 55%; --blob-a: 55% 48% at 120% 42%; }
+  .frame[data-blob="ingetogen"] { --blob-p: 52% 32% at -14% 98%; --blob-a: 42% 26% at 114% -2%; }
+  .blobs {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(var(--blob-p), color-mix(in srgb, var(--color-gloed-links) 92%, transparent) 0%, transparent 70%),
+      radial-gradient(var(--blob-a), color-mix(in srgb, var(--color-gloed-rechts) 58%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo { position: absolute; top: 120px; left: 50%; transform: translateX(-50%); width: 260px; }
+  .content {
+    position: absolute;
+    left: 75px;
+    right: 75px;
+    top: 290px;
+    bottom: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .quote {
+    margin: 36px 0 0;
+    font-style: italic;
+    font-size: 58px;
+    line-height: 1.25;
+    max-height: 520px;
+    overflow: hidden;
+  }
+  .quote::before { content: "\201C"; }
+  .quote::after { content: "\201D"; }
+  .name { margin: 56px 0 0; color: var(--color-op-achtergrond); }
+  .company { margin: 10px 0 0; font-size: 30px; line-height: 1.35; }
+</style>
+<div class="frame" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken">
+  <div class="blobs"></div>
+  <img class="logo" data-slot="logo" alt="" />
+  <div class="content">
+    <p class="label" data-slot="label" data-fit-frame></p>
+    <p class="quote" data-slot="quote" data-fit></p>
+    <p class="label name" data-slot="name" data-fit-frame></p>
+    <p class="company" data-slot="company" data-fit-frame></p>
+  </div>
+</div>

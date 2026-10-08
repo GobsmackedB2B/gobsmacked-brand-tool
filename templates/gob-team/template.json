@@ -1,0 +1,106 @@
+{
+  "id": "gob-team",
+  "name": "Teamlid",
+  "type": "social-post",
+  "width": 1080,
+  "height": 1350,
+  "source": {
+    "figmaFile": "BnE18WvS88DXplJR1VfWoB",
+    "node": "241:16",
+    "note": "Teamposts (Gobsmacked_Lewis, _Arjan, _Solane, _Anastasia)"
+  },
+  "locked": [
+    "Gradient (kies uit vaste varianten)",
+    "Foto loopt onderaan over in Midnight Blue",
+    "Logo bovenaan in het midden",
+    "Naam in hoofdletters"
+  ],
+  "tokens": {
+    "colors": [
+      "achtergrond",
+      "op-achtergrond",
+      "merk",
+      "gloed-links",
+      "gloed-rechts"
+    ],
+    "fonts": [
+      "kop",
+      "tekst"
+    ],
+    "swatch": [
+      "achtergrond"
+    ]
+  },
+  "slots": [
+    {
+      "id": "blob",
+      "type": "variant",
+      "label": "Gradient",
+      "default": "hoeken",
+      "options": [
+        {
+          "id": "hoeken",
+          "label": "Hoeken",
+          "preview": "radial-gradient(75% 48% at -12% 88%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(62% 40% at 112% 6%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "gespiegeld",
+          "label": "Gespiegeld",
+          "preview": "radial-gradient(75% 48% at 112% 88%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(62% 40% at -12% 6%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "boven-onder",
+          "label": "Boven en onder",
+          "preview": "radial-gradient(115% 46% at 50% 116%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(100% 38% at 50% -12%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "zijkanten",
+          "label": "Zijkanten",
+          "preview": "radial-gradient(62% 55% at -20% 55%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(55% 48% at 120% 42%, #21FDE594 0%, #21FDE500 70%), #090715"
+        },
+        {
+          "id": "ingetogen",
+          "label": "Ingetogen",
+          "preview": "radial-gradient(52% 32% at -14% 98%, #780B4BEB 0%, #780B4B00 70%), radial-gradient(42% 26% at 114% -2%, #21FDE594 0%, #21FDE500 70%), #090715"
+        }
+      ]
+    },
+    {
+      "id": "photo",
+      "type": "image",
+      "label": "Portretfoto (staand, hoofd boven het midden)",
+      "default": "sample-photo.jpg"
+    },
+    {
+      "id": "label",
+      "type": "text",
+      "label": "Label",
+      "maxChars": 28,
+      "default": "Nieuw in het team"
+    },
+    {
+      "id": "name",
+      "type": "text",
+      "label": "Naam",
+      "maxChars": 14,
+      "default": "Robin"
+    },
+    {
+      "id": "role",
+      "type": "text",
+      "label": "Functie",
+      "maxChars": 40,
+      "default": "Strategisch marketeer"
+    },
+    {
+      "id": "logo",
+      "type": "brand-logo",
+      "label": "Logo",
+      "onRole": "achtergrond",
+      "logo": "full"
+    }
+  ],
+  "brands": [
+    "gobsmacked"
+  ]
+}

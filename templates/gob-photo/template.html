@@ -1,0 +1,72 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .kop {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    text-transform: uppercase;
+    white-space: pre-line;
+  }
+  /* The highlighted line: letters outlined only, no fill (Gobsmacked typographic accent). */
+  .outline {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 3px var(--color-op-achtergrond);
+  }
+  .label {
+    margin: 0;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-merk);
+  }
+  .photo { position: absolute; left: 0; top: 0; width: 1080px; height: 900px; object-fit: cover; object-position: center; }
+  /* The photo dissolves into Midnight Blue, so the text below always sits on the dark ground. */
+  .fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-achtergrond) 55%, transparent) 0%, transparent 22%),
+      linear-gradient(180deg, transparent 38%, var(--color-achtergrond) 67%);
+  }
+  /* Locked: the blobs (see brand rules). A pair on opposite edges; both centres lie outside the
+     frame and fade to transparent, the middle stays dark. The variant slot picks the positions. */
+  .frame[data-blob="hoeken"] { --blob-p: 75% 48% at -12% 88%; --blob-a: 62% 40% at 112% 6%; }
+  .frame[data-blob="gespiegeld"] { --blob-p: 75% 48% at 112% 88%; --blob-a: 62% 40% at -12% 6%; }
+  .frame[data-blob="boven-onder"] { --blob-p: 115% 46% at 50% 116%; --blob-a: 100% 38% at 50% -12%; }
+  .frame[data-blob="zijkanten"] { --blob-p: 62% 55% at -20% 55%; --blob-a: 55% 48% at 120% 42%; }
+  .frame[data-blob="ingetogen"] { --blob-p: 52% 32% at -14% 98%; --blob-a: 42% 26% at 114% -2%; }
+  .blobs {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(var(--blob-p), color-mix(in srgb, var(--color-gloed-links) 92%, transparent) 0%, transparent 70%),
+      radial-gradient(var(--blob-a), color-mix(in srgb, var(--color-gloed-rechts) 58%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 260px; }
+  .text { position: absolute; left: 75px; right: 75px; bottom: 110px; }
+  .kop { margin-top: 28px; font-size: 96px; line-height: 1.02; letter-spacing: -0.01em; overflow: hidden; }
+  .kop > span { display: block; white-space: nowrap; overflow: hidden; }
+</style>
+<div class="frame" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken">
+  <img class="photo" data-slot="photo" alt="" />
+  <div class="fade"></div>
+  <div class="blobs"></div>
+  <img class="logo" data-slot="logo" alt="" />
+  <div class="text">
+    <p class="label" data-slot="label" data-fit-frame></p>
+    <h1 class="kop"><span data-slot="line1" data-fit-width></span><span class="outline" data-slot="line2" data-fit-width></span></h1>
+  </div>
+</div>

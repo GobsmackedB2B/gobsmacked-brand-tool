@@ -1,0 +1,166 @@
+<style>
+  .frame {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background: var(--color-achtergrond);
+    color: var(--color-op-achtergrond);
+    font-family: var(--font-tekst);
+  }
+  .frame p, .frame h1, .frame h2 { margin: 0; }
+  .caps { text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ---- Photo: position per layout (Figma: cover full bleed, content ~940px top or bottom) ---- */
+  .photo { position: absolute; left: 0; width: 1080px; object-fit: cover; }
+  .fade { position: absolute; inset: 0; }
+  .frame[data-layout="cover"] .photo,
+  .frame[data-layout="afsluiter"] .photo { top: 0; height: 1350px; }
+  .frame[data-layout="foto-boven"] .photo { top: 0; height: 960px; }
+  .frame[data-layout="foto-onder"] .photo { top: 470px; height: 880px; }
+  /* The photo always dissolves into Midnight Blue where text sits. */
+  .frame[data-layout="cover"] .fade {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-achtergrond) 55%, transparent) 0%, transparent 20%),
+      linear-gradient(180deg, transparent 52%, var(--color-achtergrond) 80%);
+  }
+  .frame[data-layout="foto-boven"] .fade {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-achtergrond) 55%, transparent) 0%, transparent 16%),
+      linear-gradient(180deg, transparent 50%, var(--color-achtergrond) 71%);
+  }
+  .frame[data-layout="foto-onder"] .fade {
+    background: linear-gradient(180deg, var(--color-achtergrond) 35%, transparent 55%);
+  }
+  .frame[data-layout="afsluiter"] .fade { background: color-mix(in srgb, var(--color-achtergrond) 78%, transparent); }
+
+  /* Locked: the blobs (see brand rules). A pair on opposite edges; both centres lie outside the
+     frame and fade to transparent, the middle stays dark. The variant slot picks the positions. */
+  .blobs[data-blob="hoeken"] { --blob-p: 75% 48% at -12% 88%; --blob-a: 62% 40% at 112% 6%; }
+  .blobs[data-blob="gespiegeld"] { --blob-p: 75% 48% at 112% 88%; --blob-a: 62% 40% at -12% 6%; }
+  .blobs[data-blob="boven-onder"] { --blob-p: 115% 46% at 50% 116%; --blob-a: 100% 38% at 50% -12%; }
+  .blobs[data-blob="zijkanten"] { --blob-p: 62% 55% at -20% 55%; --blob-a: 55% 48% at 120% 42%; }
+  .blobs[data-blob="ingetogen"] { --blob-p: 52% 32% at -14% 98%; --blob-a: 42% 26% at 114% -2%; }
+  .blobs {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(var(--blob-p), color-mix(in srgb, var(--color-gloed-links) 92%, transparent) 0%, transparent 70%),
+      radial-gradient(var(--blob-a), color-mix(in srgb, var(--color-gloed-rechts) 58%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ---- Fixed elements: label (top left), counter (top right), footer ---- */
+  .badge {
+    position: absolute;
+    left: 75px;
+    top: 75px;
+    height: 46px;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--color-op-achtergrond);
+    border-radius: 999px; /* fully rounded pill, as on the case carousels */
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 22px;
+    white-space: nowrap;
+  }
+  .counter {
+    position: absolute;
+    right: 75px;
+    top: 75px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+  }
+  .frame[data-layout="cover"] .counter { display: none; }
+  .logo { position: absolute; width: 188px; }
+  .frame[data-layout="cover"] .logo { right: 75px; top: 88px; }
+  .frame[data-layout="afsluiter"] .logo { left: 75px; bottom: 72px; }
+  .frame[data-layout="foto-boven"] .logo,
+  .frame[data-layout="foto-onder"] .logo { display: none; }
+  .footer {
+    position: absolute;
+    left: 75px;
+    right: 75px;
+    bottom: 72px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-kop);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+  }
+  .frame[data-layout="foto-boven"] .footer,
+  .frame[data-layout="foto-onder"] .footer { display: none; }
+  .frame[data-layout="afsluiter"] .footer .product { visibility: hidden; }
+
+  /* ---- Text per layout ---- */
+  .story, .end { position: absolute; left: 75px; right: 75px; display: none; }
+  .frame[data-layout="cover"] .story,
+  .frame[data-layout="foto-boven"] .story,
+  .frame[data-layout="foto-onder"] .story { display: block; }
+  .frame[data-layout="afsluiter"] .end { display: block; }
+  .title { font-family: var(--font-kop); font-weight: var(--font-kop-weight); }
+  .body { font-size: 30px; line-height: 1.45; white-space: pre-line; overflow: hidden; }
+
+  /* Cover: Kop 1 in capitals, one line, with the subtitle below (Figma 644:270). */
+  .frame[data-layout="cover"] .story { bottom: 140px; }
+  .frame[data-layout="cover"] .title {
+    font-size: 84px;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .frame[data-layout="cover"] .body { margin-top: 18px; max-width: 880px; font-size: 40px; line-height: 1.3; max-height: 104px; }
+
+  /* Content slides: Kop 2 (sentence case) + body, anchored to the free half (Figma 644:322/334). */
+  .frame[data-layout="foto-boven"] .story { bottom: 70px; }
+  .frame[data-layout="foto-onder"] .story { top: 188px; }
+  .frame[data-layout="foto-boven"] .title,
+  .frame[data-layout="foto-onder"] .title { font-size: 48px; line-height: 1.1; }
+  .frame[data-layout="foto-boven"] .body,
+  .frame[data-layout="foto-onder"] .body { margin-top: 22px; max-height: 218px; }
+
+  /* Closing slide (Figma 644:286). */
+  .end { top: 452px; }
+  .intro { font-size: 28px; line-height: 1.1; color: var(--color-merk); }
+  .question {
+    margin-top: 40px;
+    font-family: var(--font-kop);
+    font-weight: var(--font-kop-weight);
+    font-size: 74px;
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    max-height: 318px;
+    overflow: hidden;
+  }
+  .url { margin-top: 48px; font-size: 32px; line-height: 1.1; }
+</style>
+<div class="frame" data-slot="layout" data-slot-attr="data-layout" data-layout="cover">
+  <img class="photo" data-slot="photo" alt="" />
+  <div class="fade"></div>
+  <div class="blobs" data-slot="blob" data-slot-attr="data-blob" data-blob="hoeken"></div>
+  <p class="badge caps" data-slot="label" data-fit-frame></p>
+  <p class="counter" data-slot="counter"></p>
+  <img class="logo" data-slot="logo" alt="" />
+  <div class="story">
+    <h1 class="title" data-slot="title" data-fit-width></h1>
+    <p class="body" data-slot="body" data-fit></p>
+  </div>
+  <div class="end">
+    <p class="intro" data-slot="intro"></p>
+    <h1 class="question" data-slot="question" data-fit></h1>
+    <p class="url" data-slot="url"></p>
+  </div>
+  <div class="footer caps">
+    <span class="product" data-slot="product"></span>
+    <span class="client" data-slot="client"></span>
+  </div>
+</div>
