@@ -5,7 +5,7 @@ import { TEMPLATES } from "./templates.js";
 import { buildTemplate, defaultContent, readPhoto } from "./render.js";
 import { buildSignatureHtml, copySignature } from "./signature.js";
 import { VARIANTS } from "./gradient.js";
-import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, slugify, fitList, photoTarget, intro } from "./ui.js";
+import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, slugify, fitList, photoTarget, intro, guardedButton } from "./ui.js";
 
 const PERSON = [
   { id: "name", label: "Naam", placeholder: "Robin Jansen", maxChars: 40 },
@@ -27,6 +27,7 @@ export function onboardingTab() {
     teamSeed: Math.floor(Math.random() * 1e9),
   };
   const slug = () => slugify(person.name || "nieuwe-collega");
+  const needsPhoto = () => (state.photo ? null : "Kies eerst een foto. Zonder foto komt er \u201cKies een foto\u201d in het beeld.");
   const firstName = () => person.name.trim().split(/\s+/)[0] ?? "";
 
   // ---- Uitvoer: elk formaat is een kaart met preview, eigen keuzes en een downloadknop ----
@@ -57,6 +58,7 @@ export function onboardingTab() {
       get built() { return built; },
     };
     outputs.push(output);
+    const cardMsg = h("div");
     const el = h(
       "div",
       { class: "gt-uitvoer" },
@@ -64,7 +66,8 @@ export function onboardingTab() {
       view.el,
       warnings,
       ...options,
-      h("div", { class: "gt-acties" }, button(`Download ${type.toUpperCase()}`, (e) => busy(e.currentTarget, async () => downloadBlob(output.file(), await output.blob())), "vol"))
+      cardMsg,
+      h("div", { class: "gt-acties" }, guardedButton(`Download ${type.toUpperCase()}`, cardMsg, needsPhoto, async () => downloadBlob(output.file(), await output.blob()), "vol"))
     );
     return { el, output };
   };
@@ -132,21 +135,26 @@ export function onboardingTab() {
     sigHtml = buildSignatureHtml(person, photo);
     sigView.innerHTML = sigHtml;
   };
+  const sigMsg = h("div");
+  const copyBtn = guardedButton("Kopieer handtekening", sigMsg, needsPhoto, async () => { await refreshSignature(); await copySignature(sigHtml); }, "vol");
+  copyBtn.dataset.done = "Gekopieerd, plak in Outlook";
   const signature = h(
     "div",
     { class: "gt-uitvoer gt-uitvoer-breed" },
     h("div", { class: "gt-uitvoer-kop" }, h("h4", { class: "gt-kop4" }, "Outlook-handtekening"), h("span", { class: "gt-hint" }, "Kopieer en plak in Outlook bij Instellingen, Handtekeningen")),
     sigView,
+    sigMsg,
     h(
       "div",
       { class: "gt-acties" },
-      button("Kopieer handtekening", (e) => busy(e.currentTarget, async () => { await refreshSignature();  await copySignature(sigHtml); }), "vol"),
-      button("Download HTML", (e) => busy(e.currentTarget, async () => { await refreshSignature(); downloadBlob(`${slug()}-handtekening.html`, new Blob([`<!doctype html><meta charset="utf-8">${sigHtml}`], { type: "text/html" })); }))
+      copyBtn,
+      guardedButton("Download HTML", sigMsg, needsPhoto, async () => { await refreshSignature(); downloadBlob(`${slug()}-handtekening.html`, new Blob([`<!doctype html><meta charset="utf-8">${sigHtml}`], { type: "text/html" })); })
     )
   );
 
   // ---- Invoer ----
   const refreshAll = () => {
+    for (const m of root.querySelectorAll(".gt-melding")) m.remove();
     for (const o of outputs) o.refresh();
     refreshSignature();
   };
@@ -162,17 +170,16 @@ export function onboardingTab() {
   photoTarget(dropZone, () => dropZone.querySelector("input[type=file]"), { click: false });
   const photoField = h("div", { class: "gt-veld" }, h("span", { class: "gt-veld-naam" }, "Foto"), dropZone);
 
-  const downloadAll = button("Download alles (ZIP)", (e) =>
-    busy(e.currentTarget, async () => {
+  const allMsg = h("div");
+  const downloadAll = guardedButton("Download alles (ZIP)", allMsg, needsPhoto, async () => {
       await refreshSignature();
       const files = {};
       for (const o of outputs) files[o.file()] = new Uint8Array(await (await o.blob()).arrayBuffer());
       files[`${slug()}-handtekening.html`] = new TextEncoder().encode(`<!doctype html><meta charset="utf-8">${sigHtml}`);
       downloadBlob(`${slug()}-onboarding.zip`, new Blob([zipSync(files, { level: 0 })], { type: "application/zip" }));
-    }), "vol");
+    }, "vol");
 
-  refreshAll();
-  return h(
+  const root = h(
     "div",
     {},
     intro("Alle formaten voor een nieuwe collega, uit één foto.", [
@@ -183,10 +190,12 @@ export function onboardingTab() {
     h(
     "div",
     { class: "gt-tab" },
-    h("div", { class: "gt-kolom gt-instellingen" }, h("h3", { class: "gt-kop3" }, "Nieuwe collega"), photoField, personFields, h("div", { class: "gt-acties" }, downloadAll)),
+    h("div", { class: "gt-kolom gt-instellingen" }, h("h3", { class: "gt-kop3" }, "Nieuwe collega"), photoField, personFields, allMsg, h("div", { class: "gt-acties" }, downloadAll)),
     h("div", { class: "gt-kolom gt-voorbeeld" }, h("div", { class: "gt-uitvoer-raster" }, monday.el, email.el, website.el, profile.el, team.el, signature))
     )
   );
+  refreshAll();
+  return root;
 }
 
 function blobToDataUrl(blob) {

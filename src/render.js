@@ -80,8 +80,13 @@ export async function buildTemplate(id, content, { seed = 7, overlay = false } =
   const doc = new DOMParser().parseFromString(`<div id="gt-tpl">${html}</div>`, "text/html");
   const root = doc.getElementById("gt-tpl");
   fill(root, values);
+  // Uitsnede: content["photo__pos"] = "40% 20%" verschuift de foto binnen zijn kader.
+  const posCss = spec.slots
+    .filter((slot) => slot.type === "image" && content[`${slot.id}__pos`])
+    .map((slot) => `img[data-slot="${slot.id}"] { object-position: ${content[`${slot.id}__pos`]} !important; }`)
+    .join(" ");
   const overlayCss = overlay ? ".frame { background: transparent !important; } .photo { visibility: hidden !important; }" : "";
-  const css = `${FONT_FACE_CSS} ${tokenCss(spec, BRAND)} ${gradientCss} ${overlayCss}`;
+  const css = `${FONT_FACE_CSS} ${tokenCss(spec, BRAND)} ${gradientCss} ${posCss} ${overlayCss}`;
   return { spec, width: spec.width, height: spec.height, css, root };
 }
 
@@ -165,4 +170,13 @@ export async function readPhoto(file, maxEdge = 2560) {
   } finally {
     URL.revokeObjectURL(url);
   }
+}
+
+/** Standaard uitsnede van de foto in een template ([x, y] in %), uit object-position in de CSS. */
+export function defaultPhotoPosition(id) {
+  const m = TEMPLATES[id].html.match(/\.photo\s*\{[^}]*object-position:\s*([^;}]+)/);
+  const words = { left: 0, center: 50, right: 100, top: 0, bottom: 100 };
+  const parts = (m ? m[1].trim().split(/\s+/) : ["50%", "50%"]).map((v) => (v in words ? words[v] : parseFloat(v)));
+  const [x = 50, y = 50] = parts.length === 1 ? [parts[0], 50] : parts;
+  return [isNaN(x) ? 50 : x, isNaN(y) ? 50 : y];
 }

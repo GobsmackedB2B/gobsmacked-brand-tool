@@ -185,3 +185,10 @@
 
 .gt-compact .gt-podium svg { max-height: 340px; }
 .gt-compact .gt-acties { margin-top: 12px; }
+
+/* Melding bij downloaden en voorbeeldtekst */
+.gt-melding { margin: 12px 0 0; padding: 10px 14px; border-left: 3px solid var(--gt-acc); background: var(--gt-acc-zacht); font-size: 14px; }
+.gt-voorbeeldtag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--gt-acc-zacht); color: var(--gt-acc); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: middle; }
+/* Uitsnede-schuifjes */
+.gt-uitsnede { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--gt-zacht); }
+.gt-uitsnede input[type=range] { width: 100%; accent-color: var(--gt-acc); }

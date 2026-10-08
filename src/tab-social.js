@@ -2,8 +2,8 @@
 import { zipSync } from "fflate";
 import { PDFDocument } from "pdf-lib";
 import { TEMPLATES, SOCIAL_IDS } from "./templates.js";
-import { buildTemplate, defaultContent, slotsFor, slideContents, readPhoto, rasterize, canvasToBlob } from "./render.js";
-import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, fitList, photoTarget, intro } from "./ui.js";
+import { buildTemplate, defaultContent, slotsFor, slideContents, readPhoto, rasterize, canvasToBlob, defaultPhotoPosition } from "./render.js";
+import { h, button, choices, field, textInput, fileInput, downloadBlob, busy, preview, exportBuilt, fitList, photoTarget, intro, guardedButton } from "./ui.js";
 import { gradientThumb } from "./gradient.js";
 
 const newSeed = () => Math.floor(Math.random() * 1e9);
@@ -56,7 +56,22 @@ export function socialTab() {
 const ORDER = { image: 0, text: 1, date: 1, select: 1, variant: 2 };
 const orderOf = (slot) => (slot.id === "blob" ? 3 : ORDER[slot.type] ?? 2);
 
-/** Formuliervelden voor een set slots. size: { w, h } van het template, voor de gradientvoorbeelden. */
+/** Uitsnede-schuifjes voor een foto: horizontaal en verticaal verschuiven binnen het kader. */
+function cropControls(slot, content, onChange, templateId) {
+  const [dx, dy] = (content[`${slot.id}__pos`] ?? "").match(/[\d.]+/g)?.map(Number) ?? defaultPhotoPosition(templateId);
+  const pos = { x: dx, y: dy };
+  const range = (axis) => {
+    const el = h("input", { type: "range", min: 0, max: 100, step: 1, value: pos[axis], "aria-label": axis === "x" ? "Foto links of rechts" : "Foto hoger of lager" });
+    el.addEventListener("input", () => { pos[axis] = Number(el.value); onChange(`${slot.id}__pos`, `${pos.x}% ${pos.y}%`); });
+    return el;
+  };
+  return h("div", { class: "gt-uitsnede" }, h("span", {}, "Links / rechts"), range("x"), h("span", {}, "Hoger / lager"), range("y"));
+}
+
+/**
+ * Formuliervelden voor een set slots. size: { w, h, id } van het template, voor de
+ * gradientvoorbeelden en de standaard uitsnede van foto's.
+ */
 function slotFields(slots, content, onChange, size) {
   return slots
     .filter((s) => s.type !== "brand-logo" && s.id !== "counter")
@@ -72,17 +87,23 @@ function slotFields(slots, content, onChange, size) {
       }
       if (slot.type === "image") {
         const name = h("span", { class: "gt-hint" }, content[slot.id] ? "Foto gekozen" : "Of sleep een foto op het voorbeeld");
+        const crop = h("div", { hidden: !content[slot.id] }, size?.id ? cropControls(slot, content, onChange, size.id) : null);
         return field(
           slot.label,
-          h("div", { class: "gt-rij" }, fileInput(async (file) => { name.textContent = file.name; onChange(slot.id, await readPhoto(file)); }), name)
+          h("div", {},
+            h("div", { class: "gt-rij" }, fileInput(async (file) => { name.textContent = file.name; onChange(slot.id, await readPhoto(file)); crop.hidden = false; }), name),
+            crop
+          )
         );
       }
       const multiline = (slot.maxChars ?? 0) > 60;
       const count = h("span", { class: "gt-teller" });
       const setCount = (v) => (count.textContent = slot.maxChars ? `${v.length} / ${slot.maxChars}` : "");
       setCount(content[slot.id] ?? "");
-      const input = textInput(content[slot.id], (v) => { setCount(v); onChange(slot.id, v); }, { maxChars: slot.maxChars, multiline, placeholder: slot.placeholder });
-      return field(slot.label, h("div", { class: "gt-invoer-wrap" }, input, count));
+      // Zolang de voorbeeldtekst er nog staat, zie je dat aan het label; zo post niemand per ongeluk het voorbeeld.
+      const tag = h("span", { class: "gt-voorbeeldtag", hidden: !(slot.default && content[slot.id] === slot.default) }, "Voorbeeld");
+      const input = textInput(content[slot.id], (v) => { setCount(v); tag.hidden = !(slot.default && v === slot.default); onChange(slot.id, v); }, { maxChars: slot.maxChars, multiline, placeholder: slot.placeholder });
+      return field(h("span", {}, slot.label, tag), h("div", { class: "gt-invoer-wrap" }, input, count));
     });
 }
 
@@ -93,6 +114,7 @@ function postEditor(id) {
   const content = defaultContent(spec);
   let seed = newSeed();
   let built = null;
+  const msg = h("div");
   const warnings = h("div");
   const view = preview({ onFit: (issues) => warnings.replaceChildren(fitList(issues, labelsOf(spec)) ?? "") });
 
@@ -104,24 +126,28 @@ function postEditor(id) {
     built = b;
     view.update(built);
   };
-  const onChange = (slotId, value) => { content[slotId] = value; refresh(); };
+  const onChange = (slotId, value) => { content[slotId] = value; msg.replaceChildren(); refresh(); };
 
   const base = `gobsmacked-${id.replace(/^gob-/, "")}-${today()}`;
   const hasGradient = spec.slots.some((s) => s.id === "blob");
+  const needsPhoto = () => (spec.slots.some((s) => s.type === "image" && !content[s.id]) ? "Kies eerst een foto. Zonder foto komt er \u201cKies een foto\u201d in het beeld." : null);
   const actions = h(
     "div",
-    { class: "gt-acties" },
-    button("Download PNG", (e) => busy(e.currentTarget, async () => downloadBlob(`${base}.png`, await exportBuilt(built, "png"))), "vol"),
-    button("Download JPG", (e) => busy(e.currentTarget, async () => downloadBlob(`${base}.jpg`, await exportBuilt(built, "jpg")))),
-    spec.overlayExport
-      ? button("Alleen overlay (transparante PNG)", (e) =>
-          busy(e.currentTarget, async () => downloadBlob(`${base}-overlay.png`, await exportBuilt(await buildTemplate(id, content, { seed, overlay: true }), "png")))
-        )
-      : null
+    {},
+    msg,
+    h(
+      "div",
+      { class: "gt-acties" },
+      guardedButton("Download PNG", msg, needsPhoto, async () => downloadBlob(`${base}.png`, await exportBuilt(built, "png")), "vol"),
+      guardedButton("Download JPG", msg, needsPhoto, async () => downloadBlob(`${base}.jpg`, await exportBuilt(built, "jpg"))),
+      spec.overlayExport
+        ? guardedButton("Alleen overlay (transparante PNG)", msg, null, async () => downloadBlob(`${base}-overlay.png`, await exportBuilt(await buildTemplate(id, content, { seed, overlay: true }), "png")))
+        : null
+    )
   );
 
   refresh();
-  const size = { w: spec.width, h: spec.height };
+  const size = { w: spec.width, h: spec.height, id };
   const form = h("div", { class: "gt-kolom gt-instellingen" },
     h("h3", { class: "gt-kop3" }, spec.name),
     slotFields(spec.slots, content, onChange, size),
@@ -163,8 +189,10 @@ function carouselEditor(id) {
   const slideForm = h("div");
 
   const contents = () => slideContents(spec, shared, slides);
+  const msg = h("div");
   let pending = 0;
   const refresh = async () => {
+    msg.replaceChildren();
     const mine = ++pending;
     const b = await buildTemplate(id, contents()[current], { seed });
     if (mine !== pending) return;
@@ -200,7 +228,7 @@ function carouselEditor(id) {
         ? field("Layout van deze slide", choices(layoutSlot.options, slide.layout, (v) => { slides[current] = { ...slideFor({ layout: v }), ...pick(slide, v) }; renderTabs(); renderSlideForm(); refresh(); }).el)
         : null,
       ...(own.length
-        ? slotFields(own, slide, (k, v) => { slide[k] = v; renderTabs(); refresh(); }, { w: spec.width, h: spec.height })
+        ? slotFields(own, slide, (k, v) => { slide[k] = v; renderTabs(); refresh(); }, { w: spec.width, h: spec.height, id })
         : [h("p", { class: "gt-hint" }, "Deze slide heeft geen eigen tekst of foto.")]),
       canEditSlides
         ? h("div", { class: "gt-rij" }, moveBtn(-1, "← Eerder"), moveBtn(1, "Later →"), removeBtn)
@@ -270,13 +298,28 @@ function carouselEditor(id) {
     return new Blob([await doc.save()], { type: "application/pdf" });
   };
 
+  // Slides waarvan de layout een foto heeft maar waar nog geen foto gekozen is.
+  const photoSlots = spec.slots.filter((sl) => sl.type === "image");
+  const missingOn = (indexes) => {
+    const missing = indexes.filter((i) => photoSlots.some((sl) => (!sl.layouts || sl.layouts.includes(slides[i].layout)) && !slides[i][sl.id] && !shared[sl.id]));
+    if (!missing.length) return null;
+    const list = missing.map((i) => i + 1);
+    const names = list.length === 1 ? `slide ${list[0]}` : `slides ${list.slice(0, -1).join(", ")} en ${list.at(-1)}`;
+    return `Kies nog een foto voor ${names}. Zonder foto komt er \u201cKies een foto\u201d in het beeld.`;
+  };
+  const all = () => missingOn(slides.map((_, i) => i));
   const actions = h(
     "div",
-    { class: "gt-acties" },
-    button("Download PDF (LinkedIn)", (e) => busy(e.currentTarget, async () => downloadBlob(`${name}.pdf`, await pdf())), "vol"),
-    button("Alle slides PNG (ZIP)", (e) => busy(e.currentTarget, async () => downloadBlob(`${name}-png.zip`, await zipOf("png")))),
-    button("Alle slides JPG (ZIP)", (e) => busy(e.currentTarget, async () => downloadBlob(`${name}-jpg.zip`, await zipOf("jpg")))),
-    button("Deze slide PNG", (e) => busy(e.currentTarget, async () => downloadBlob(`${name}-${String(current + 1).padStart(2, "0")}.png`, await exportBuilt(built, "png"))))
+    {},
+    msg,
+    h(
+      "div",
+      { class: "gt-acties" },
+      guardedButton("Download PDF (LinkedIn)", msg, all, async () => downloadBlob(`${name}.pdf`, await pdf()), "vol"),
+      guardedButton("Alle slides PNG (ZIP)", msg, all, async () => downloadBlob(`${name}-png.zip`, await zipOf("png"))),
+      guardedButton("Alle slides JPG (ZIP)", msg, all, async () => downloadBlob(`${name}-jpg.zip`, await zipOf("jpg"))),
+      guardedButton("Deze slide PNG", msg, () => missingOn([current]), async () => downloadBlob(`${name}-${String(current + 1).padStart(2, "0")}.png`, await exportBuilt(built, "png")))
+    )
   );
 
   renderTabs();
@@ -295,7 +338,7 @@ function carouselEditor(id) {
       slideForm,
       h("hr", { class: "gt-lijn" }),
       h("h3", { class: "gt-kop3" }, "Stap 3 · Voor alle slides"),
-      slotFields(sharedSlots, shared, (k, v) => { shared[k] = v; refresh(); }, { w: spec.width, h: spec.height }),
+      slotFields(sharedSlots, shared, (k, v) => { shared[k] = v; refresh(); }, { w: spec.width, h: spec.height, id }),
       h("div", { class: "gt-rij" }, button("Nieuwe gradientvorm", () => { seed = newSeed(); refresh(); }))
     ),
     h("div", { class: "gt-kolom gt-voorbeeld" }, navBar, view.el, warnings, actions)

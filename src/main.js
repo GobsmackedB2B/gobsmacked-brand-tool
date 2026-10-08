@@ -73,6 +73,17 @@ function fullBleed(host, panel) {
   window.addEventListener("resize", apply);
 }
 
+// Er wordt niets opgeslagen. Wie al iets heeft ingevuld en de pagina wil verlaten, krijgt
+// eerst de vraag van de browser of dat de bedoeling is.
+let dirty = false;
+document.addEventListener("input", (e) => { if (e.target.closest?.(".gt")) dirty = true; }, true);
+document.addEventListener("change", (e) => { if (e.target.closest?.(".gt")) dirty = true; }, true);
+window.addEventListener("beforeunload", (e) => {
+  if (!dirty) return;
+  e.preventDefault();
+  e.returnValue = "";
+});
+
 function init() {
   document.querySelectorAll("#gobsmacked-tool, [data-gobsmacked-tool]").forEach(mount);
 }

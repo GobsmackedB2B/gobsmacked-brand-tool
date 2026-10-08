@@ -118,6 +118,19 @@ export function downloadBlob(name, blob) {
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
+/**
+ * Download-knop die eerst controleert of alles klaar is. check() geeft een melding terug
+ * (bijv. "Kies eerst een foto.") of niets; de melding komt in msgEl en er wordt niets gedownload.
+ */
+export function guardedButton(label, msgEl, check, fn, kind = "leeg") {
+  return button(label, (e) => {
+    const problem = check?.();
+    msgEl.replaceChildren(problem ? h("p", { class: "gt-melding" }, problem) : "");
+    if (problem) return;
+    busy(e.currentTarget, fn);
+  }, kind);
+}
+
 /** Bezig-status op een knop terwijl een export loopt. */
 export async function busy(btn, fn) {
   const label = btn.dataset.label ?? btn.textContent;
@@ -131,7 +144,7 @@ export async function busy(btn, fn) {
     setTimeout(() => { btn.textContent = label; btn.classList.remove("gt-klaar"); }, 1800);
   } catch (err) {
     console.error(err);
-    alert(err?.message || "Er ging iets mis bij het exporteren.");
+    alert(err?.message || "Er ging iets mis. Probeer het nog een keer, of gebruik Chrome.");
     btn.textContent = label;
   } finally {
     btn.disabled = false;
